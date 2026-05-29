@@ -2313,13 +2313,13 @@
                     if (project.videoUrl) this.mediaList.push({ type: 'video', src: project.videoUrl, label: 'PV预览', cover: videoCover });
                     if (project.videoUrl2) this.mediaList.push({ type: 'video', src: project.videoUrl2, label: '演示视频', cover: videoCover });
                     if (project.screenshots) project.screenshots.forEach(s => this.mediaList.push({ type: 'image', src: s, label: '截图' }));
-                    const hasVideo = !!project.videoUrl;
-                    const isLocalVideo = project.videoUrl && !project.videoUrl.includes('bilibili');
+                    const firstVideo = this.mediaList.find(m => m.type === 'video');
                     const hasMedia = this.mediaList.length > 0;
                     html += `<div class="modal-media-section"><div class="modal-main-media">`;
                     if (hasMedia) {
-                        if (hasVideo) {
-                            html += isLocalVideo ? `<video src="${project.videoUrl}" controls style="width:100%;height:100%;"></video>` : `<iframe src="${project.videoUrl}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>`;
+                        if (firstVideo) {
+                            const isBilibili = firstVideo.src.includes('bilibili');
+                            html += isBilibili ? `<iframe src="${firstVideo.src}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>` : `<video src="${firstVideo.src}" controls style="width:100%;height:100%;"></video>`;
                         } else {
                             html += `<img src="${this.mediaList[0].src}" alt="${project.title}">`;
                         }
