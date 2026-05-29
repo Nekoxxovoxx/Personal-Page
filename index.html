@@ -1,0 +1,2494 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逸轩 - 游戏策划作品集</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #080808;
+            --bg-secondary: #0f0f0f;
+            --bg-tertiary: #141414;
+            --text-primary: #e8e8e8;
+            --text-secondary: #6a6a6a;
+            --text-muted: #444444;
+            --accent: #2a2a2a;
+            --accent-light: #3a3a3a;
+            --border: #1a1a1a;
+            --border-light: #252525;
+            --transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* 背景粒子 */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        /* 噪点叠加 */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* 渐变光晕 */
+        .gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .gradient-orb-1 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(40, 40, 60, 0.25), transparent);
+            top: -100px;
+            right: -100px;
+            animation: float1 25s ease-in-out infinite;
+        }
+
+        .gradient-orb-2 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(30, 30, 50, 0.2), transparent);
+            bottom: -50px;
+            left: -50px;
+            animation: float2 30s ease-in-out infinite;
+        }
+
+        .gradient-orb-3 {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(45, 35, 55, 0.15), transparent);
+            top: 40%;
+            left: 60%;
+            animation: float3 35s ease-in-out infinite;
+        }
+
+        .gradient-orb-4 {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(35, 45, 55, 0.12), transparent);
+            top: 70%;
+            left: 20%;
+            animation: float1 40s ease-in-out infinite reverse;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, 30px) scale(1.1); }
+            50% { transform: translate(20px, -20px) scale(0.9); }
+            75% { transform: translate(-10px, -30px) scale(1.05); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -20px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.95); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            50% { transform: translate(-20px, 20px) scale(1.2); opacity: 0.35; }
+        }
+
+        /* 背景网格 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 100px 100px;
+            mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%);
+        }
+
+        /* 背景星点 */
+        .bg-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            will-change: contents;
+        }
+
+        .star {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: rgba(180, 180, 200, 0.3);
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+            will-change: opacity;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.6; }
+        }
+
+        /* 导航栏 */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(8, 8, 8, 0.95), rgba(8, 8, 8, 0.8));
+            backdrop-filter: blur(20px);
+        }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.3rem 0.5rem;
+        }
+
+        .lang-btn:hover { color: var(--text-secondary); }
+        .lang-btn.active { color: var(--text-primary); }
+
+        .lang-divider { color: var(--text-muted); font-size: 0.7rem; }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-resume-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #2a2a4a, #3a3a6a);
+            border: 1px solid #4a4a8a;
+            color: #e8e8f0;
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-resume-btn:hover {
+            background: linear-gradient(135deg, #3a3a5a, #4a4a7a);
+            border-color: #6a6aaa;
+        }
+
+        /* 主内容区 */
+        .main-content { position: relative; z-index: 10; }
+
+        .section {
+            padding: 8rem 6rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-inner {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+        }
+
+        /* 首页 */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 6rem;
+        }
+
+        .hero { text-align: center; max-width: 900px; }
+
+        .hero-name {
+            font-size: 8rem;
+            font-weight: 200;
+            letter-spacing: 20px;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--border-light);
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .hero-desc {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 550px;
+            margin: 0 auto 4rem;
+            line-height: 2;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--text-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 代表作品 */
+        .featured-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .featured-header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .featured-header p { color: var(--text-muted); font-size: 0.85rem; }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .featured-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .featured-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(100, 100, 150, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(100, 100, 150, 0.1);
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--bg-tertiary);
+            transition: transform 0.5s ease;
+        }
+
+        .featured-item:hover .featured-image {
+            transform: scale(1.05);
+        }
+
+        .featured-content { padding: 2rem; }
+
+        .featured-tag {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .featured-content h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .featured-role {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border);
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        /* 关于我 */
+        .about {
+            display: grid;
+            grid-template-columns: 0.8fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 450px;
+            background: var(--bg-secondary);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .about-content h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .about-content p {
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+            font-size: 0.95rem;
+        }
+
+        .about-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+
+        .about-tag {
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--border);
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            font-weight: 200;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .about-skills {
+            margin-top: 2.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .skill-item {
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, #1a1a2e, #2a2a4a);
+            border: 1px solid #3a3a5a;
+            font-size: 0.75rem;
+            color: #b8b8d0;
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(100, 100, 200, 0.1), rgba(150, 100, 200, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-item:hover {
+            border-color: #5a5a8a;
+            color: #e8e8f0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(100, 100, 200, 0.15);
+        }
+
+        .skill-item:hover::before {
+            opacity: 1;
+        }
+
+        /* 作品集 */
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4rem;
+        }
+
+        .portfolio-header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .portfolio-filter {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+        }
+
+        .filter-btn:hover, .filter-btn.active { color: var(--text-primary); }
+
+        .portfolio-wrapper {
+            max-height: 650px;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .portfolio-wrapper.expanded { max-height: 3000px; }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .portfolio-item {
+            position: relative;
+            height: 280px;
+            background: var(--bg-secondary);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item:hover { transform: translateY(-3px); }
+        .portfolio-item.hidden { display: none; }
+
+        .portfolio-item-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item:hover .portfolio-item-bg { transform: scale(1.05); }
+
+        .portfolio-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            z-index: 1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover::after { opacity: 1; }
+
+        .portfolio-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            z-index: 2;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .portfolio-category {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .portfolio-info h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .portfolio-info p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .portfolio-toggle {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .portfolio-toggle-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-toggle-btn:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        /* 游戏积累 */
+        .gaming-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gaming-header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 0.8rem;
+        }
+
+        .gaming-header p { color: var(--text-muted); font-size: 0.85rem; }
+
+        .gaming-main-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .gaming-main-tab {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: var(--text-primary);
+        }
+
+        .gaming-main-tab:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .gaming-main-tab.active {
+            border-color: var(--text-primary);
+        }
+
+        .gaming-main-icon { font-size: 1.8rem; }
+
+        .gaming-main-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .gaming-main-info span:first-child {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .gaming-main-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .gaming-sub-section { transition: all 0.3s ease; }
+        .gaming-sub-section.hidden { display: none; }
+
+        .gaming-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .gaming-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gaming-tab:hover { border-color: var(--border-light); color: var(--text-secondary); }
+        .gaming-tab.active { background: linear-gradient(135deg, #2a2a4a, #3a3a6a); border-color: #4a4a8a; color: #e8e8f0; }
+
+        .gaming-section { display: none; }
+        .gaming-section.active { display: block; }
+
+        .gaming-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .gaming-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .gaming-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+
+        .gaming-card.perfect {
+            border: none;
+            position: relative;
+            background: var(--bg-secondary);
+        }
+
+        .gaming-card.perfect::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #7b68ee, #ff0080);
+            background-size: 300% 300%;
+            z-index: 0;
+            animation: rainbowBorder 4s ease infinite;
+        }
+
+        .gaming-card.perfect::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--bg-secondary);
+            z-index: 0;
+        }
+
+        .gaming-card.perfect > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes rainbowBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gaming-card.perfect:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(123, 104, 238, 0.25);
+        }
+
+        .gaming-card-image {
+            width: 100%;
+            height: 100px;
+            background: var(--bg-tertiary);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .gaming-card-info { padding: 0.8rem; }
+
+        .gaming-card-info h4 {
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .gaming-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: linear-gradient(135deg, #1a1a2e, #2a2a4a);
+            border: 1px solid #3a3a5a;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            color: #b8b8d0;
+        }
+
+        .gaming-card.perfect .gaming-badge {
+            background: linear-gradient(135deg, #2a1a3e, #3a2a5a);
+            border-color: #6a4a9a;
+            color: #d8b8f0;
+        }
+
+        /* 经历 */
+        .experience-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .experience-header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .experience-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem; }
+
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--border), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 3.5rem;
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover { opacity: 1; }
+        .timeline-item:last-child { padding-bottom: 0; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3rem;
+            top: 0.5rem;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            border: 2px solid var(--bg-primary);
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover::before {
+            background: var(--text-primary);
+        }
+
+        .timeline-date {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.15rem;
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-content h4 {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-content p {
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+
+        .timeline-collapsed { max-height: 0; overflow: hidden; transition: max-height 0.6s ease; }
+        .timeline-collapsed.expanded { max-height: 1000px; }
+
+        .timeline-toggle { text-align: center; margin-top: 2rem; }
+
+        .timeline-toggle-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.8rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-toggle-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+        /* 联系 */
+        .contact-section {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-section > p {
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 3.5rem;
+            line-height: 1.9;
+            font-size: 0.95rem;
+        }
+
+        .contact-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.2rem 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .contact-link:hover {
+            color: var(--text-primary);
+            border-color: var(--border-light);
+            transform: translateY(-3px);
+        }
+
+        .contact-link-icon {
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .contact-link:hover .contact-link-icon {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group { position: relative; }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 300;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group textarea { resize: none; height: 80px; }
+        .form-group input:focus, .form-group textarea:focus { border-bottom-color: var(--text-secondary); }
+
+        .form-group label {
+            position: absolute;
+            top: 1rem;
+            left: 0;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -1.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .submit-btn {
+            justify-self: center;
+            padding: 1rem 3rem;
+            background: var(--text-primary);
+            border: none;
+            color: var(--bg-primary);
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover { background: var(--text-secondary); }
+
+        /* 回到顶部 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 45px;
+            height: 45px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 1.2rem;
+        }
+
+        .back-to-top.visible { opacity: 1; pointer-events: auto; }
+        .back-to-top:hover { background: var(--text-primary); color: var(--bg-primary); }
+
+        /* 弹窗关闭按钮 */
+        .modal-close-btn {
+            position: fixed;
+            top: 2rem;
+            right: 4rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .modal-close-btn.visible { opacity: 1; visibility: visible; }
+        .modal-close-btn:hover { background: var(--text-primary); color: var(--bg-primary); }
+
+        /* 鼠标跟随光效 */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(100, 100, 120, 0.08), transparent 70%);
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        /* 滚动淡入动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 分隔线微光 */
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .section-divider {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-primary);
+            position: relative;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            margin: 2rem 0;
+        }
+
+        .modal-overlay.active .modal-container { transform: translateY(0); }
+
+        .modal-content { padding: 0; }
+
+        .modal-media-section {
+            background: #000;
+            border: 1px solid var(--border);
+        }
+
+        .modal-main-media {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-main-media img, .modal-main-media video { width: 100%; height: 100%; object-fit: cover; }
+        .modal-main-media iframe { width: 100%; height: 100%; }
+
+        .modal-media-placeholder { color: var(--text-muted); font-size: 1.2rem; }
+
+        .modal-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            overflow-x: auto;
+            border-top: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+
+        .modal-thumbnails::-webkit-scrollbar { display: none; }
+
+        .modal-thumbnail {
+            width: 120px;
+            height: 68px;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .modal-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-thumbnail:hover { border-color: var(--text-muted); }
+        .modal-thumbnail.active { border-color: var(--text-primary); }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .modal-sidebar {
+            border-left: 1px solid var(--border);
+            padding-left: 2rem;
+        }
+
+        .modal-header { margin-bottom: 2rem; }
+
+        .modal-category {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-title { font-size: 1.8rem; font-weight: 400; margin-bottom: 0.5rem; }
+        .modal-subtitle { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-btn-primary { background: #5893d4; color: #fff; border: none; }
+        .modal-btn-primary:hover { background: #6aa3e4; }
+        .modal-btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+        .modal-btn-outline:hover { border-color: var(--text-secondary); }
+
+        .modal-section { margin-bottom: 2.5rem; }
+
+        .modal-section-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-section p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+        .modal-info-block { margin-bottom: 1.5rem; }
+
+        .modal-info-label {
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .modal-info-value { font-size: 0.85rem; color: var(--text-primary); }
+
+        /* 页脚 */
+        .footer {
+            padding: 3rem 6rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .nav { padding: 1.5rem 2.5rem; }
+            .section { padding: 6rem 3rem; }
+            .hero-name { font-size: 5rem; }
+            .about { grid-template-columns: 1fr; gap: 3rem; }
+            .featured-grid { grid-template-columns: repeat(2, 1fr); }
+            .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+            .gaming-cards { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .nav { padding: 1.5rem; }
+            .nav-links { display: none; }
+            .section { padding: 5rem 1.5rem; }
+            .hero-name { font-size: 3rem; letter-spacing: 5px; }
+            .featured-grid { grid-template-columns: 1fr; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .gaming-main-tabs { grid-template-columns: 1fr; }
+            .gaming-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .contact-links { grid-template-columns: repeat(2, 1fr); }
+            .modal-body { grid-template-columns: 1fr; }
+            .modal-sidebar { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .footer { padding: 2rem 1.5rem; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-stars" id="bgStars"></div>
+    <div class="gradient-orb gradient-orb-1"></div>
+    <div class="gradient-orb gradient-orb-2"></div>
+    <div class="gradient-orb gradient-orb-3"></div>
+    <div class="gradient-orb gradient-orb-4"></div>
+
+    <nav class="nav">
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="zh">中</button>
+            <span class="lang-divider">/</span>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#hero" data-zh="首页" data-en="Home">首页</a></li>
+            <li><a href="#about" data-zh="关于" data-en="About">关于</a></li>
+            <li><a href="#featured" data-zh="代表作品" data-en="Featured">代表作品</a></li>
+            <li><a href="#portfolio" data-zh="作品" data-en="Works">作品</a></li>
+            <li><a href="#experience" data-zh="经历" data-en="Experience">经历</a></li>
+            <li><a href="#gaming" data-zh="游戏积累" data-en="Gaming">游戏积累</a></li>
+            <li><a href="#contact" data-zh="联系" data-en="Contact">联系</a></li>
+        </ul>
+        <a href="pdf/简历.pdf" download="逸轩-游戏策划简历.pdf" class="nav-resume-btn">
+            <span class="nav-resume-icon">📄</span>
+            <span data-zh="简历" data-en="Resume">简历</span>
+        </a>
+    </nav>
+
+    <main class="main-content">
+        <!-- 首页 -->
+        <section class="hero-section" id="hero">
+            <div class="hero">
+                <h1 class="hero-name" data-zh="逸轩" data-en="YIXUAN">逸轩</h1>
+                <div class="hero-tag" data-zh="游戏策划 · 系统设计 · 叙事体验" data-en="Game Design · System Design · Narrative Experience">游戏策划 · 系统设计 · 叙事体验</div>
+                <p class="hero-desc" data-zh="热爱游戏设计的在校学生，专注于游戏机制设计、关卡规划与叙事体验。相信好的游戏设计能触动人心，创造独特的互动记忆。" data-en="A student passionate about game design, focusing on game mechanics, level planning, and narrative experience.">热爱游戏设计的在校学生，专注于游戏机制设计、关卡规划与叙事体验。相信好的游戏设计能触动人心，创造独特的互动记忆。</p>
+                <div class="hero-actions">
+                    <a href="#portfolio" class="btn-primary" data-zh="查看作品" data-en="View Works">查看作品</a>
+                    <a href="#contact" class="btn-outline" data-zh="取得联系" data-en="Contact">取得联系</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 关于我 -->
+        <section class="section" id="about">
+            <div class="section-inner">
+                <div class="about">
+                    <div class="about-visual">
+                        <div class="about-image" style="background-image: url('images/头像/焰.jpg'); background-size: cover; background-position: center;"></div>
+                    </div>
+                    <div class="about-content">
+                        <h2 data-zh="关于我" data-en="About Me">关于我</h2>
+                        <p data-zh="我是一名成都东软学院数字媒体技术专业的大二学生，热衷于游戏设计，对游戏机制、关卡设计和叙事体验有着浓厚的兴趣。" data-en="I am a sophomore majoring in Digital Media Technology at Chengdu Neusoft University, passionate about game design.">我是一名成都东软学院数字媒体技术专业的大二学生，热衷于游戏设计，对游戏机制、关卡设计和叙事体验有着浓厚的兴趣。</p>
+                        <p data-zh="我相信优秀的游戏设计源于对玩家心理的深刻理解与对细节的极致追求。" data-en="I believe excellent game design stems from deep understanding of player psychology and pursuit of detail.">我相信优秀的游戏设计源于对玩家心理的深刻理解与对细节的极致追求。</p>
+                        <div class="about-tags">
+                            <span class="about-tag" data-zh="游戏机制设计" data-en="Game Mechanics">游戏机制设计</span>
+                            <span class="about-tag" data-zh="关卡规划" data-en="Level Planning">关卡规划</span>
+                            <span class="about-tag" data-zh="系统策划" data-en="System Design">系统策划</span>
+                            <span class="about-tag" data-zh="叙事设计" data-en="Narrative Design">叙事设计</span>
+                            <span class="about-tag" data-zh="玩家研究" data-en="Player Research">玩家研究</span>
+                        </div>
+                        <div class="about-stats">
+                            <div class="stat-item">
+                                <h3>5+</h3>
+                                <p data-zh="文案文档" data-en="Documents">文案文档</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>3</h3>
+                                <p data-zh="游戏项目" data-en="Game Projects">游戏项目</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>2</h3>
+                                <p data-zh="竞赛获奖" data-en="Awards">竞赛获奖</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>1</h3>
+                                <p data-zh="工作室" data-en="Studio">工作室</p>
+                            </div>
+                        </div>
+                        <div class="about-skills">
+                            <div class="skills-list">
+                                <span class="skill-item">Unity</span>
+                                <span class="skill-item">C#</span>
+                                <span class="skill-item">Maya</span>
+                                <span class="skill-item">Blender</span>
+                                <span class="skill-item">Photoshop</span>
+                                <span class="skill-item">AIGC</span>
+                                <span class="skill-item">Word</span>
+                                <span class="skill-item">PowerPoint</span>
+                                <span class="skill-item">Excel</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 代表作品 -->
+        <section class="section" id="featured">
+            <div class="section-inner">
+                <div class="featured-header">
+                    <h2 data-zh="代表作品" data-en="Featured Works">代表作品</h2>
+                    <p data-zh="我参与开发的核心游戏项目" data-en="Core game projects I've been involved in">我参与开发的核心游戏项目</p>
+                </div>
+                <div class="featured-grid">
+                    <div class="featured-item">
+                        <div class="featured-image" style="background-image: url('images/游戏图标/余烬.png');"></div>
+                        <div class="featured-content">
+                            <div class="featured-tag" data-zh="原创独立游戏" data-en="Original Indie Game">原创独立游戏</div>
+                            <h3 data-zh="余烬" data-en="Embers">余烬</h3>
+                            <p data-zh="独立开发的原创游戏，专注于核心机制设计与关卡规划。" data-en="An independently developed original game, focusing on core mechanics design and level planning.">独立开发的原创游戏，专注于核心机制设计与关卡规划。</p>
+                            <div class="featured-role" data-zh="独立开发" data-en="Solo Developer">独立开发</div>
+                        </div>
+                    </div>
+                    <div class="featured-item">
+                        <div class="featured-image" style="background-image: url('images/游戏图标/勇者扑街兵工厂.png');"></div>
+                        <div class="featured-content">
+                            <div class="featured-tag" data-zh="腾讯极限开发大赛 · 优胜奖" data-en="Tencent Extreme Dev · Award">腾讯极限开发大赛 · 优胜奖</div>
+                            <h3 data-zh="勇者扑街兵工厂" data-en="Hero's Arsenal">勇者扑街兵工厂</h3>
+                            <p data-zh="72小时极限开发作品，负责核心玩法设计与系统规划。" data-en="72-hour extreme development project, responsible for core gameplay design.">72小时极限开发作品，负责核心玩法设计与系统规划。</p>
+                            <div class="featured-role" data-zh="主策划" data-en="Lead Designer">主策划</div>
+                        </div>
+                    </div>
+                    <div class="featured-item">
+                        <div class="featured-image" style="background-image: url('images/游戏图标/时空筑桥录.png');"></div>
+                        <div class="featured-content">
+                            <div class="featured-tag" data-zh="全国大学生计算机设计大赛" data-en="National College Computer Design">全国大学生计算机设计大赛</div>
+                            <h3 data-zh="时空筑桥录" data-en="Space-Time Bridge Builder">时空筑桥录</h3>
+                            <p data-zh="担任队长主导核心玩法设计，完成兼具传统文化表达与解谜体验的可玩Demo。" data-en="Led team to design core gameplay, completed a playable demo combining traditional culture with puzzle experience.">担任队长主导核心玩法设计，完成兼具传统文化表达与解谜体验的可玩Demo。</p>
+                            <div class="featured-role" data-zh="队长/主策划" data-en="Leader/Lead Designer">队长/主策划</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 作品集 -->
+        <section class="section" id="portfolio">
+            <div class="section-inner">
+                <div class="portfolio-header">
+                    <h2 data-zh="作品集" data-en="Portfolio">作品集</h2>
+                    <div class="portfolio-filter">
+                        <button class="filter-btn active" data-filter="all" data-zh="全部" data-en="All">全部</button>
+                        <button class="filter-btn" data-filter="demo" data-zh="游戏Demo" data-en="Game Demo">游戏Demo</button>
+                        <button class="filter-btn" data-filter="design" data-zh="策划案" data-en="Design Docs">策划案</button>
+                        <button class="filter-btn" data-filter="analysis" data-zh="拆解案" data-en="Analysis">拆解案</button>
+                        <button class="filter-btn" data-filter="research" data-zh="游戏文档" data-en="Game Docs">游戏文档</button>
+                    </div>
+                </div>
+                <div class="portfolio-wrapper" id="portfolioWrapper">
+                    <div class="portfolio-grid" id="portfolioGrid">
+                        <div class="portfolio-item" data-category="demo" data-project="embers" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/游戏图标/余烬.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="原创独立游戏" data-en="Original Indie Game">原创独立游戏</div>
+                                <h3 data-zh="余烬" data-en="Embers">余烬</h3>
+                                <p data-zh="独立开发 · 核心机制设计" data-en="Solo Dev · Core Mechanics">独立开发 · 核心机制设计</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="demo" data-project="hero-arsenal" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/游戏图标/勇者扑街兵工厂.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="腾讯极限开发大赛 · 优胜奖" data-en="Tencent Extreme Dev · Award">腾讯极限开发大赛 · 优胜奖</div>
+                                <h3 data-zh="勇者扑街兵工厂" data-en="Hero's Arsenal">勇者扑街兵工厂</h3>
+                                <p data-zh="游戏策划 · 核心玩法设计" data-en="Game Design · Core Gameplay">游戏策划 · 核心玩法设计</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="demo" data-project="bridge-builder" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/游戏图标/时空筑桥录.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="全国大学生计算机设计大赛" data-en="National College Computer Design">全国大学生计算机设计大赛</div>
+                                <h3 data-zh="时空筑桥录" data-en="Space-Time Bridge Builder">时空筑桥录</h3>
+                                <p data-zh="队长 · 游戏策划" data-en="Leader · Game Designer">队长 · 游戏策划</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="design" data-project="hero-arsenal-doc" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/BGC策划案.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="策划案" data-en="Design Doc">策划案</div>
+                                <h3 data-zh="勇者扑街兵工厂策划案" data-en="Hero's Arsenal Design Doc">勇者扑街兵工厂策划案</h3>
+                                <p data-zh="系统策划 · 关卡设计" data-en="System Design · Level Design">系统策划 · 关卡设计</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="design" data-project="hero-design" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/原创英雄设计.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="腾讯光核共创营课题" data-en="Tencent Guanghe Camp Project">腾讯光核共创营课题</div>
+                                <h3 data-zh="原创英雄设计" data-en="Original Hero Design">原创英雄设计</h3>
+                                <p data-zh="英雄设计 · 技能机制" data-en="Hero Design · Skill Mechanics">英雄设计 · 技能机制</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="design" data-project="bridge-builder-doc" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/时空筑桥录策划案.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="策划案" data-en="Design Doc">策划案</div>
+                                <h3 data-zh="时空筑桥录策划案" data-en="Space-Time Bridge Builder Doc">时空筑桥录策划案</h3>
+                                <p data-zh="队长 · 策划文档" data-en="Leader · Design Document">队长 · 策划文档</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="analysis" data-project="warframe-analysis" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/WF拆解案.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="拆解案" data-en="Analysis">拆解案</div>
+                                <h3 data-zh="Warframe拆解案" data-en="Warframe Analysis">Warframe拆解案</h3>
+                                <p data-zh="战斗系统 · 数值分析" data-en="Combat System · Analysis">战斗系统 · 数值分析</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="design" data-project="devouring-source" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/噬造之源策划案.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="练习策划案" data-en="Practice Doc">练习策划案</div>
+                                <h3 data-zh="噬造之源策划案" data-en="Source of Devouring Doc">噬造之源策划案</h3>
+                                <p data-zh="系统设计 · 机制构思" data-en="System Design · Mechanics">系统设计 · 机制构思</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="research" data-project="jrpg-analysis" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/JPRG痛点解析.png'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="游戏文档" data-en="Game Doc">游戏文档</div>
+                                <h3 data-zh="JRPG痛点解析" data-en="JRPG Pain Points Analysis">JRPG痛点解析</h3>
+                                <p data-zh="品类分析 · 核心痛点" data-en="Genre Analysis · Pain Points">品类分析 · 核心痛点</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-toggle">
+                    <button class="portfolio-toggle-btn" id="portfolioToggleBtn" data-zh="展开全部" data-en="Show All">展开全部</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 经历 -->
+        <section class="section" id="experience">
+            <div class="section-inner">
+                <div class="experience-header">
+                    <h2 data-zh="学习与实践" data-en="Learning & Practice">学习与实践</h2>
+                    <p data-zh="不断探索游戏设计的边界" data-en="Continuously exploring the boundaries of game design">不断探索游戏设计的边界</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2026.05.16</div>
+                        <div class="timeline-content">
+                            <h3 data-zh="SGDC蜀光游集" data-en="SGDC Game Dev Alliance">SGDC蜀光游集</h3>
+                            <h4 data-zh="第一届成都高校游戏开发者联盟年展 · 摊主" data-en="1st Chengdu College Game Dev Alliance Exhibition · Exhibitor">第一届成都高校游戏开发者联盟年展 · 摊主</h4>
+                            <p data-zh="作为摊主被邀请参加第一届成都高校游戏开发者联盟年展，展示个人游戏作品。" data-en="Invited as an exhibitor to showcase personal game works.">作为摊主被邀请参加第一届成都高校游戏开发者联盟年展，展示个人游戏作品。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2026.04 - 2026.06</div>
+                        <div class="timeline-content">
+                            <h3 data-zh="腾讯光核共创营" data-en="Tencent Guanghe Co-Creation Camp">腾讯光核共创营</h3>
+                            <h4 data-zh="实战训练生" data-en="Practical Trainee">实战训练生</h4>
+                            <p data-zh="通过撰写《最终幻想7：重制版》JRPG品类拆解分析文章入选光核共创营。完成MOBA英雄与对抗设计、原创游戏概念设计等课题。" data-en="Selected by writing JRPG analysis article on FF7 Remake. Completed MOBA hero design and original game concept projects.">通过撰写《最终幻想7：重制版》JRPG品类拆解分析文章入选光核共创营。完成MOBA英雄与对抗设计、原创游戏概念设计等课题。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2026.04 - 2026.05</div>
+                        <div class="timeline-content">
+                            <h3 data-zh="全国大学生计算机设计大赛" data-en="National College Computer Design Competition">全国大学生计算机设计大赛</h3>
+                            <h4 data-zh="时空筑桥录 · 队长/策划" data-en="Space-Time Bridge Builder · Leader/Designer">时空筑桥录 · 队长/策划</h4>
+                            <p data-zh="担任队长统筹团队协作，负责游戏策划与机制设计。在有限时间内完成从概念到可玩Demo的全流程开发。" data-en="Led team collaboration, responsible for game design and mechanics. Completed full development from concept to playable demo.">担任队长统筹团队协作，负责游戏策划与机制设计。在有限时间内完成从概念到可玩Demo的全流程开发。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-collapsed" id="timelineCollapsed">
+                        <div class="timeline-item">
+                            <div class="timeline-date">2026.03.27 - 2026.03.30</div>
+                            <div class="timeline-content">
+                                <h3 data-zh="腾讯极限开发大赛" data-en="Tencent Extreme Dev Competition">腾讯极限开发大赛</h3>
+                                <h4 data-zh="勇者扑街兵工厂 · 游戏策划" data-en="Hero's Arsenal · Game Designer">勇者扑街兵工厂 · 游戏策划</h4>
+                                <p data-zh="担任项目策划，负责核心玩法设计与系统规划。团队获得优胜奖。" data-en="Served as project designer, responsible for core gameplay design. Team won Excellence Award.">担任项目策划，负责核心玩法设计与系统规划。团队获得优胜奖。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2026 - 至今</div>
+                            <div class="timeline-content">
+                                <h3 data-zh="芯核工作室" data-en="Xinhe Studio">芯核工作室</h3>
+                                <h4 data-zh="学校工作室 · 成员" data-en="School Studio · Member">学校工作室 · 成员</h4>
+                                <p data-zh="加入学校游戏开发工作室，参与团队项目开发。" data-en="Joined school game development studio, participating in team projects.">加入学校游戏开发工作室，参与团队项目开发。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2024 - 2028</div>
+                            <div class="timeline-content">
+                                <h3 data-zh="数字媒体技术专业" data-en="Digital Media Technology">数字媒体技术专业</h3>
+                                <h4 data-zh="成都东软学院 · 本科" data-en="Chengdu Neusoft University · Bachelor">成都东软学院 · 本科</h4>
+                                <p data-zh="系统学习游戏设计理论、交互设计、叙事设计等课程。" data-en="Systematically studying game design theory, interactive design, narrative design.">系统学习游戏设计理论、交互设计、叙事设计等课程。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2018 - 至今</div>
+                            <div class="timeline-content">
+                                <h3 data-zh="游戏游玩与体验" data-en="Gaming & Experience">游戏游玩与体验</h3>
+                                <h4 data-zh="深度玩家" data-en="Dedicated Player">深度玩家</h4>
+                                <p data-zh="累计超万小时游戏体验，覆盖JRPG、魂Like、开放世界、叙事冒险等多品类。" data-en="Over 10,000 hours of gaming experience across JRPG, Souls-like, Open World, Narrative Adventure.">累计超万小时游戏体验，覆盖JRPG、魂Like、开放世界、叙事冒险等多品类。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-toggle">
+                    <button class="timeline-toggle-btn" id="timelineToggleBtn" data-zh="展开更多" data-en="Show More">展开更多</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 游戏积累 -->
+        <section class="section" id="gaming">
+            <div class="section-inner">
+                <div class="gaming-header">
+                    <h2 data-zh="游戏积累" data-en="Gaming Experience">游戏积累</h2>
+                    <p data-zh="超万小时深度游玩经验，覆盖多品类游戏" data-en="Over 10,000 hours of deep gaming experience">超万小时深度游玩经验，覆盖多品类游戏</p>
+                </div>
+                <div class="gaming-main-tabs">
+                    <button class="gaming-main-tab active" data-main="single" onclick="switchMainTab('single')">
+                        <span class="gaming-main-icon">🎮</span>
+                        <span class="gaming-main-info">
+                            <span data-zh="单机游戏" data-en="Single Player">单机游戏</span>
+                            <span class="gaming-main-time">5000+ <span data-zh="小时" data-en="hrs">小时</span></span>
+                        </span>
+                    </button>
+                    <button class="gaming-main-tab" data-main="online" onclick="switchMainTab('online')">
+                        <span class="gaming-main-icon">🌐</span>
+                        <span class="gaming-main-info">
+                            <span data-zh="网络游戏" data-en="Online Games">网络游戏</span>
+                            <span class="gaming-main-time">15000+ <span data-zh="小时" data-en="hrs">小时</span></span>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- 单机游戏 -->
+                <div class="gaming-sub-section" id="single-games">
+                    <div class="gaming-tabs">
+                        <button class="gaming-tab active" data-tab="jrpg" onclick="switchSubTab('jrpg')">JRPG / CRPG</button>
+                        <button class="gaming-tab" data-tab="souls" onclick="switchSubTab('souls')">魂Like / 硬核动作</button>
+                        <button class="gaming-tab" data-tab="openworld" onclick="switchSubTab('openworld')">开放世界</button>
+                        <button class="gaming-tab" data-tab="narrative" onclick="switchSubTab('narrative')">叙事 / 冒险</button>
+                        <button class="gaming-tab" data-tab="shooting" onclick="switchSubTab('shooting')">射击</button>
+                        <button class="gaming-tab" data-tab="single-others" onclick="switchSubTab('single-others')">其他</button>
+                    </div>
+
+                    <div class="gaming-section active" id="tab-jrpg">
+                        <div class="gaming-cards">
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/2679460/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="暗喻幻想" data-en="Metaphor: ReFantazio">暗喻幻想</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1687950/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="女神异闻录5" data-en="Persona 5 Royal">女神异闻录5</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/2161700/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="女神异闻录3RE" data-en="Persona 3 Reload">女神异闻录3RE</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1462040/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="最终幻想7：重制版" data-en="FF7 Remake">最终幻想7：重制版</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('images/游戏积累/最终幻想7重生.jpg')"></div><div class="gaming-card-info"><h4 data-zh="最终幻想7：重生" data-en="FF7 Rebirth">最终幻想7：重生</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/2515020/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="最终幻想16" data-en="FF16">最终幻想16</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="博德之门3" data-en="Baldur's Gate 3">博德之门3</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/637650/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="最终幻想15" data-en="FF15">最终幻想15</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/881020/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="碧蓝幻想：Relink" data-en="Granblue Fantasy: Relink">碧蓝幻想：Relink</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/13机兵防卫圈.jpg')"></div><div class="gaming-card-info"><h4 data-zh="十三机兵防卫圈" data-en="13 Sentinels">十三机兵防卫圈</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/413410/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="弹丸论破1" data-en="Danganronpa">弹丸论破1</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-souls">
+                        <div class="gaming-cards">
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/2358720/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="黑神话：悟空" data-en="Black Myth: Wukong">黑神话：悟空</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="艾尔登法环" data-en="ELDEN RING">艾尔登法环</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('images/游戏积累/剑星.jpg')"></div><div class="gaming-card-info"><h4 data-zh="剑星" data-en="Stellar Blade">剑星</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/524220/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="尼尔：机械纪元" data-en="NieR:Automata">尼尔：机械纪元</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/601150/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="鬼泣5" data-en="Devil May Cry 5">鬼泣5</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1145360/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="哈迪斯" data-en="Hades">哈迪斯</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/814380/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="只狼" data-en="Sekiro">只狼</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/485510/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="仁王" data-en="Nioh">仁王</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/忍者龙剑传4.jpg')"></div><div class="gaming-card-info"><h4 data-zh="忍者龙剑传4" data-en="Ninja Gaiden 4">忍者龙剑传4</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/582010/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="怪物猎人：世界" data-en="Monster Hunter: World">怪物猎人：世界</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1178830/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="光明记忆：无限" data-en="Bright Memory: Infinite">光明记忆：无限</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-openworld">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/239140/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="消逝的光芒" data-en="Dying Light">消逝的光芒</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="赛博朋克2077" data-en="Cyberpunk 2077">赛博朋克2077</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/地平线零之曙光.jpg')"></div><div class="gaming-card-info"><h4 data-zh="地平线：零之曙光" data-en="Horizon Zero Dawn">地平线：零之曙光</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1817070/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="漫威蜘蛛侠1" data-en="Marvel's Spider-Man">漫威蜘蛛侠1</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/33230/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="刺客信条2" data-en="Assassin's Creed II">刺客信条2</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/48190/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="刺客信条：兄弟会" data-en="AC Brotherhood">刺客信条：兄弟会</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/534380/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="消逝的光芒2" data-en="Dying Light 2">消逝的光芒2</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/242760/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="森林" data-en="The Forest">森林</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-narrative">
+                        <div class="gaming-cards">
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1426210/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="双人成行" data-en="It Takes Two">双人成行</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card perfect"><div class="gaming-card-image" style="background-image: url('images/游戏积累/双影奇境.jpg')"></div><div class="gaming-card-info"><h4 data-zh="双影奇境" data-en="Split Fiction">双影奇境</h4><span class="gaming-badge" data-zh="全成就通关" data-en="100%">全成就通关</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1222140/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="底特律：化身为人" data-en="Detroit: Become Human">底特律：化身为人</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/648100/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="人狼村之谜" data-en="Raging Loop">人狼村之谜</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/752590/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="瘟疫传说：无罪" data-en="A Plague Tale">瘟疫传说：无罪</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-shooting">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/379720/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4>Doom</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/782330/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4>Doom Eternal</h4><span class="gaming-badge" data-zh="高收集度" data-en="High">高收集度</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1237970/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="泰坦陨落2" data-en="Titanfall 2">泰坦陨落2</h4><span class="gaming-badge" data-zh="已通关" data-en="Done">已通关</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-single-others">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/774171/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="喵斯快跑" data-en="Muse Dash">喵斯快跑</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 网络游戏 -->
+                <div class="gaming-sub-section hidden" id="online-games">
+                    <div class="gaming-tabs">
+                        <button class="gaming-tab active" data-tab="mmo" onclick="switchSubTab('mmo')">网游</button>
+                        <button class="gaming-tab" data-tab="gacha" onclick="switchSubTab('gacha')">二游</button>
+                        <button class="gaming-tab" data-tab="online-others" onclick="switchSubTab('online-others')">其他</button>
+                    </div>
+
+                    <div class="gaming-section active" id="tab-mmo">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/英雄联盟.png')"></div><div class="gaming-card-info"><h4 data-zh="英雄联盟" data-en="League of Legends">英雄联盟</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/永劫.jpg')"></div><div class="gaming-card-info"><h4 data-zh="永劫无间" data-en="Naraka: Bladepoint">永劫无间</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/三角洲.jpg')"></div><div class="gaming-card-info"><h4 data-zh="三角洲行动" data-en="Delta Force">三角洲行动</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/星际战甲.jpg')"></div><div class="gaming-card-info"><h4 data-zh="星际战甲" data-en="Warframe">星际战甲</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/燕云十六声.jpg')"></div><div class="gaming-card-info"><h4 data-zh="燕云十六声" data-en="Yancloud">燕云十六声</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/730/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4>CS:GO</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-gacha">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/原神.png')"></div><div class="gaming-card-info"><h4 data-zh="原神" data-en="Genshin Impact">原神</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/崩坏星穹铁道.png')"></div><div class="gaming-card-info"><h4 data-zh="崩坏：星穹铁道" data-en="Honkai: Star Rail">崩坏：星穹铁道</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/鸣潮.png')"></div><div class="gaming-card-info"><h4 data-zh="鸣潮" data-en="Wuthering Waves">鸣潮</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/战双帕弥什.png')"></div><div class="gaming-card-info"><h4 data-zh="战双帕弥什" data-en="Punishing: Gray Raven">战双帕弥什</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gaming-section" id="tab-online-others">
+                        <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/1097150/capsule_616x353.jpg')"></div><div class="gaming-card-info"><h4 data-zh="糖豆人" data-en="Fall Guys">糖豆人</h4><span class="gaming-badge" data-zh="深度游玩" data-en="Deep">深度游玩</span></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 联系 -->
+        <section class="section" id="contact">
+            <div class="section-inner">
+                <div class="contact-section">
+                    <h2 data-zh="取得联系" data-en="Get in Touch">取得联系</h2>
+                    <p data-zh="如果你对游戏设计感兴趣，或者有合作机会，欢迎与我交流。" data-en="If you're interested in game design or have collaboration opportunities, feel free to reach out.">如果你对游戏设计感兴趣，或者有合作机会，欢迎与我交流。</p>
+                    <div class="contact-links">
+                        <a href="mailto:3023660939@qq.com" class="contact-link">
+                            <div class="contact-link-icon">✉</div>
+                            <span>3023660939@qq.com</span>
+                        </a>
+                        <a href="tel:19180795253" class="contact-link">
+                            <div class="contact-link-icon">📱</div>
+                            <span>19180795253</span>
+                        </a>
+                        <a href="https://github.com/Nekovoxx" target="_blank" class="contact-link">
+                            <div class="contact-link-icon">GH</div>
+                            <span>GitHub</span>
+                        </a>
+                        <div class="contact-link">
+                            <div class="contact-link-icon">微</div>
+                            <span>Echoxxovojj</span>
+                        </div>
+                    </div>
+                    <form class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" placeholder=" " required data-zh-placeholder="你的名字" data-en-placeholder="Your Name">
+                                <label data-zh="你的名字" data-en="Your Name">你的名字</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" placeholder=" " required data-zh-placeholder="电子邮箱" data-en-placeholder="Email">
+                                <label data-zh="电子邮箱" data-en="Email">电子邮箱</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder=" " required data-zh-placeholder="主题" data-en-placeholder="Subject">
+                            <label data-zh="主题" data-en="Subject">主题</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder=" " required data-zh-placeholder="想说的话" data-en-placeholder="Your Message"></textarea>
+                            <label data-zh="想说的话" data-en="Your Message">想说的话</label>
+                        </div>
+                        <button type="submit" class="submit-btn" data-zh="发送消息" data-en="Send Message">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p data-zh="© 2026 逸轩的个人主页" data-en="© 2026 Yixuan's Personal Homepage">© 2026 逸轩的个人主页</p>
+        </footer>
+    </main>
+
+    <div class="back-to-top" id="backToTop">↑</div>
+    <button class="modal-close-btn" id="modalClose">✕</button>
+
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-container">
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 作品数据
+        const projectsData = {
+            'embers': {
+                type: 'demo', category: '原创独立游戏', title: '余烬', subtitle: '2D横版动作游戏',
+                role: '独立开发者', description: '独立进行暗黑幻想题材2D横版动作游戏开发，围绕"余火"世界观设计角色、场景与基础战斗循环。使用Unity完成角色控制、状态机、基础UI与关卡搭建，实现核心玩法。',
+                tools: ['Unity', 'C#', 'Aseprite'], duration: '2026.02 - 至今', teamSize: '1人',
+                videoUrl: '', screenshots: [], documents: [], playUrl: '', relatedDoc: ''
+            },
+            'hero-arsenal': {
+                type: 'demo', category: '腾讯极限开发大赛 · 优胜奖', title: '勇者扑街兵工厂', subtitle: '72小时极限开发作品',
+                role: '主策划', description: '72小时极限开发中自主组建团队并搭建协作沟通机制；独立完成核心玩法循环与数值成长设计，撰写完整策划案并协同程序落地关键模块，最终交付完整可玩Demo并获得优胜奖。',
+                tools: ['Unity', '策划文档'], duration: '2026.03.27 - 2026.03.30', teamSize: '团队',
+                videoUrl: 'images/勇者扑街兵工厂/勇者扑街兵工厂_PV预览.mp4', videoUrl2: 'images/勇者扑街兵工厂/演示视频.mp4',
+                videoCover: 'images/勇者扑街兵工厂/0.png',
+                screenshots: ['images/勇者扑街兵工厂/1.png','images/勇者扑街兵工厂/2.png','images/勇者扑街兵工厂/3.png','images/勇者扑街兵工厂/4.png','images/勇者扑街兵工厂/5.png','images/勇者扑街兵工厂/6.png','images/勇者扑街兵工厂/7.png','images/勇者扑街兵工厂/8.png'],
+                documents: ['images/文案文档图标/BGC策划案.png'], playUrl: '', gameUrl: 'game/勇者扑街兵工厂.zip', relatedDoc: 'hero-arsenal-doc'
+            },
+            'bridge-builder': {
+                type: 'demo', category: '全国大学生计算机设计大赛', title: '时空筑桥录', subtitle: '古桥修复+轻解谜',
+                role: '队长/主策划', description: '半个月内完成团队组建与项目统筹，担任队长主导"古桥修复+轻解谜"核心玩法设计，围绕鱼沼飞梁、汴水虹桥搭建两大关卡流程。',
+                tools: ['Unity', '策划文档'], duration: '2026.04 - 2026.05', teamSize: '团队',
+                videoUrl: '', videoUrl2: 'images/时空筑桥录/时空筑桥录演示视频.mp4',
+                videoCover: 'images/时空筑桥录/图0.png',
+                screenshots: ['images/时空筑桥录/图1.png','images/时空筑桥录/图2.png','images/时空筑桥录/图3.png','images/时空筑桥录/图4.png','images/时空筑桥录/图5.png','images/时空筑桥录/图6.png','images/时空筑桥录/图7.png','images/时空筑桥录/图8.png','images/时空筑桥录/图9.png','images/时空筑桥录/图10.png'],
+                documents: ['images/文案文档图标/时空筑桥录策划案.png'], playUrl: '', gameUrl: 'game/时空筑桥录.zip', relatedDoc: 'bridge-builder-doc'
+            },
+            'hero-arsenal-doc': {
+                type: 'design', category: '策划案', title: '勇者扑街兵工厂策划案', subtitle: '系统策划 · 关卡设计',
+                role: '策划', description: '完整的项目策划文档，包含核心玩法设计、系统架构、关卡规划、数值设计等内容。',
+                tools: ['Word', 'Excel'], duration: '2026.03', teamSize: '-',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://docs.qq.com/doc/DUW55aXdSY1JOY0pH',
+                docxUrl: 'DOCX/《勇者扑街兵工厂》游戏策划案.docx', documents: ['images/文案文档图标/BGC策划案.png']
+            },
+            'hero-design': {
+                type: 'design', category: '腾讯光核共创营课题', title: '原创英雄设计', subtitle: 'MOBA英雄与对抗设计',
+                role: '设计师', description: '腾讯光核共创营实训课题之一，完成原创MOBA英雄的完整设计，包括英雄背景故事、技能机制、数值框架、对抗策略等内容。',
+                tools: ['文档工具'], duration: '2026.04 - 2026.06', teamSize: '个人',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://docs.qq.com/doc/DUWV5YVR2UWpXdnVM',
+                docxUrl: 'DOCX/以执念为刃，以梦痕为战：从佛耶戈分析到原创英雄赫因设计.docx', documents: ['images/文案文档图标/原创英雄设计.png']
+            },
+            'bridge-builder-doc': {
+                type: 'design', category: '策划案', title: '时空筑桥录策划案', subtitle: '队长 · 策划文档',
+                role: '队长/策划', description: '完整的项目策划文档，包含游戏机制设计、关卡流程、交互逻辑、任务系统等内容。',
+                tools: ['Word', 'Excel'], duration: '2026.04 - 2026.05', teamSize: '-',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://docs.qq.com/doc/DUUxGVFZjT0dWR293',
+                docxUrl: 'DOCX/时空筑桥录.docx', documents: ['images/文案文档图标/时空筑桥录策划案.png']
+            },
+            'devouring-source': {
+                type: 'design', category: '练习策划案', title: '噬造之源策划案', subtitle: '系统设计 · 机制构思',
+                role: '策划', description: '独立完成原创2D沙盒解谜游戏的全流程策划练习。',
+                tools: ['Word'], duration: '2026', teamSize: '-',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://docs.qq.com/doc/DUUF3TkNCa2FQSkp6',
+                docxUrl: 'DOCX/噬造之源.docx', documents: ['images/文案文档图标/噬造之源策划案.png']
+            },
+            'warframe-analysis': {
+                type: 'analysis', category: '拆解案', title: 'Warframe拆解案', subtitle: '战斗系统 · 数值分析',
+                role: '分析者', description: '围绕经典长线刷宝MMO《Warframe》开展系统化玩法拆解。',
+                tools: ['文档工具'], duration: '2026.03', teamSize: '-',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://www.kdocs.cn/l/cqGd5gY0nVaS?from=docs',
+                docxUrl: 'DOCX/Warframe拆解案.docx', documents: ['images/文案文档图标/WF拆解案.png']
+            },
+            'jrpg-analysis': {
+                type: 'analysis', category: '游戏文档', title: 'JRPG痛点解析', subtitle: '品类分析 · 核心痛点',
+                role: '分析者', description: '通过撰写《最终幻想7：重制版》JRPG品类拆解分析文章，围绕现代叙事向JRPG的核心体验与痛点开展专题研究。',
+                tools: ['文档工具'], duration: '2026', teamSize: '-',
+                videoUrl: '', screenshots: [], pdfUrl: 'https://docs.qq.com/doc/DUXRmdXdmSG5qd0VJ',
+                docxUrl: 'DOCX/JRPG痛点解析.docx', documents: ['images/文案文档图标/JPRG痛点解析.png']
+            }
+        };
+
+        // 粒子背景
+        class ParticleBackground {
+            constructor() {
+                this.canvas = document.getElementById('bg-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: 0, y: 0 };
+                this.particleCount = 60;
+                this.connectionDistance = 130;
+                this.mouseRadius = 180;
+                this.lastTime = 0;
+                this.init();
+                this.animate();
+                window.addEventListener('resize', () => this.resize());
+                window.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; });
+            }
+            init() { this.resize(); this.createParticles(); }
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
+            createParticles() {
+                this.particles = [];
+                for (let i = 0; i < this.particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+                        size: Math.random() * 1.5 + 0.5, opacity: Math.random() * 0.4 + 0.1
+                    });
+                }
+            }
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+                    const dx = this.mouse.x - p.x, dy = this.mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < this.mouseRadius) {
+                        const force = (this.mouseRadius - dist) / this.mouseRadius;
+                        p.vx -= dx * force * 0.0005; p.vy -= dy * force * 0.0005;
+                    }
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(150, 150, 170, ${p.opacity})`;
+                    this.ctx.fill();
+                });
+                for (let i = 0; i < this.particles.length; i++) {
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        const dx = this.particles[i].x - this.particles[j].x;
+                        const dy = this.particles[i].y - this.particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < this.connectionDistance) {
+                            const opacity = (1 - dist / this.connectionDistance) * 0.1;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                            this.ctx.strokeStyle = `rgba(150, 150, 170, ${opacity})`;
+                            this.ctx.lineWidth = 0.5;
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // 筛选功能
+        class PortfolioFilter {
+            constructor() {
+                this.filterBtns = document.querySelectorAll('.filter-btn');
+                this.portfolioItems = document.querySelectorAll('.portfolio-item');
+                this.wrapper = document.getElementById('portfolioWrapper');
+                this.toggleBtn = document.querySelector('.portfolio-toggle');
+                this.init();
+            }
+            init() {
+                this.filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.filterBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const filter = btn.dataset.filter;
+                        if (this.wrapper) this.wrapper.classList.add('expanded');
+                        if (this.toggleBtn) this.toggleBtn.style.display = filter !== 'all' ? 'none' : 'block';
+                        this.portfolioItems.forEach(item => {
+                            if (filter === 'all' || item.dataset.category === filter) {
+                                item.classList.remove('hidden');
+                            } else {
+                                item.classList.add('hidden');
+                            }
+                        });
+                    });
+                });
+            }
+        }
+
+        // 作品集展开
+        class PortfolioToggle {
+            constructor() {
+                this.btn = document.getElementById('portfolioToggleBtn');
+                this.wrapper = document.getElementById('portfolioWrapper');
+                this.isExpanded = false;
+                this.init();
+            }
+            init() {
+                if (this.btn && this.wrapper) {
+                    this.btn.addEventListener('click', () => {
+                        this.isExpanded = !this.isExpanded;
+                        this.wrapper.classList.toggle('expanded', this.isExpanded);
+                        const zhText = this.isExpanded ? '收起' : '展开全部';
+                        const enText = this.isExpanded ? 'Show Less' : 'Show All';
+                        this.btn.textContent = langSwitch && langSwitch.currentLang === 'en' ? enText : zhText;
+                        this.btn.dataset.zh = this.isExpanded ? '收起' : '展开全部';
+                        this.btn.dataset.en = this.isExpanded ? 'Show Less' : 'Show All';
+                    });
+                }
+            }
+        }
+
+        // 回到顶部
+        class BackToTop {
+            constructor() {
+                this.btn = document.getElementById('backToTop');
+                this.init();
+            }
+            init() {
+                window.addEventListener('scroll', () => {
+                    this.btn.classList.toggle('visible', window.scrollY > 500);
+                });
+                this.btn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            }
+        }
+
+        // 导航高亮
+        class NavHighlight {
+            constructor() {
+                this.sections = document.querySelectorAll('section[id]');
+                this.navLinks = document.querySelectorAll('.nav-links a');
+                this.init();
+            }
+            init() {
+                window.addEventListener('scroll', () => {
+                    let current = '';
+                    this.sections.forEach(section => {
+                        if (window.scrollY >= section.offsetTop - 200) current = section.id;
+                    });
+                    this.navLinks.forEach(link => {
+                        link.style.color = '';
+                        if (link.getAttribute('href') === `#${current}`) link.style.color = 'var(--text-primary)';
+                    });
+                });
+            }
+        }
+
+        // 语言切换
+        class LanguageSwitch {
+            constructor() {
+                this.langBtns = document.querySelectorAll('.lang-btn');
+                this.currentLang = 'zh';
+                this.init();
+            }
+            init() {
+                this.langBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.langBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentLang = btn.dataset.lang;
+                        this.switchLanguage(this.currentLang);
+                    });
+                });
+            }
+            switchLanguage(lang) {
+                document.querySelectorAll('[data-zh]').forEach(el => {
+                    const text = el.dataset[lang];
+                    if (text) el.textContent = text;
+                });
+                document.querySelectorAll('[data-zh-placeholder]').forEach(el => {
+                    const placeholder = el.dataset[lang + '-placeholder'];
+                    if (placeholder) el.placeholder = placeholder;
+                });
+            }
+        }
+
+        let langSwitch;
+
+        // 时间线展开
+        class TimelineToggle {
+            constructor() {
+                this.btn = document.getElementById('timelineToggleBtn');
+                this.collapsed = document.getElementById('timelineCollapsed');
+                this.isExpanded = false;
+                this.init();
+            }
+            init() {
+                if (this.btn && this.collapsed) {
+                    this.btn.addEventListener('click', () => {
+                        this.isExpanded = !this.isExpanded;
+                        this.collapsed.classList.toggle('expanded', this.isExpanded);
+                        const zhText = this.isExpanded ? '收起' : '展开更多';
+                        const enText = this.isExpanded ? 'Show Less' : 'Show More';
+                        this.btn.textContent = langSwitch && langSwitch.currentLang === 'en' ? enText : zhText;
+                    });
+                }
+            }
+        }
+
+        // 弹窗控制
+        let projectModal;
+        class ProjectModal {
+            constructor() {
+                this.modal = document.getElementById('projectModal');
+                this.content = document.getElementById('modalContent');
+                this.closeBtn = document.getElementById('modalClose');
+                this.init();
+            }
+            init() {
+                this.closeBtn.addEventListener('click', () => this.close());
+                this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.close(); });
+                document.querySelectorAll('.portfolio-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const projectId = item.dataset.project;
+                        if (projectId && projectsData[projectId]) this.open(projectsData[projectId]);
+                    });
+                });
+            }
+            open(project) {
+                this.content.innerHTML = this.generateContent(project);
+                this.modal.classList.add('active');
+                this.closeBtn.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+                this.initThumbnails();
+            }
+            close() {
+                this.modal.classList.remove('active');
+                this.closeBtn.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+            initThumbnails() {
+                const thumbnails = document.querySelectorAll('.modal-thumbnail');
+                thumbnails.forEach((thumb, index) => {
+                    thumb.addEventListener('click', () => {
+                        this.switchMedia(index);
+                        this.scrollToThumbnail(index);
+                    });
+                });
+            }
+            scrollToThumbnail(index) {
+                const thumbnails = document.querySelectorAll('.modal-thumbnail');
+                const container = document.querySelector('.modal-thumbnails');
+                const thumb = thumbnails[index];
+                if (!thumb || !container) return;
+                const containerRect = container.getBoundingClientRect();
+                const thumbRect = thumb.getBoundingClientRect();
+                if (thumbRect.right > containerRect.right - 20) {
+                    container.scrollBy({ left: thumbRect.right - containerRect.right + thumbRect.width + 20, behavior: 'smooth' });
+                } else if (thumbRect.left < containerRect.left + 20) {
+                    container.scrollBy({ left: thumbRect.left - containerRect.left - thumbRect.width - 20, behavior: 'smooth' });
+                }
+            }
+            switchMedia(index) {
+                const mainMedia = document.querySelector('.modal-main-media');
+                const thumbnails = document.querySelectorAll('.modal-thumbnail');
+                if (!mainMedia || !thumbnails[index]) return;
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumbnails[index].classList.add('active');
+                const mediaType = thumbnails[index].dataset.type;
+                const mediaSrc = thumbnails[index].dataset.src;
+                if (mediaType === 'video') {
+                    if (mediaSrc.includes('bilibili')) {
+                        mainMedia.innerHTML = `<iframe src="${mediaSrc}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>`;
+                    } else {
+                        mainMedia.innerHTML = `<video src="${mediaSrc}" controls style="width:100%;height:100%;"></video>`;
+                    }
+                } else {
+                    mainMedia.innerHTML = `<img src="${mediaSrc}" alt="展示图片">`;
+                }
+            }
+            generateContent(project) {
+                let html = '';
+                // 媒体区域 - 只有游戏Demo类型才显示
+                if (project.type === 'demo') {
+                    this.mediaList = [];
+                    const videoCover = project.videoCover || (project.screenshots && project.screenshots[0]) || '';
+                    if (project.videoUrl) this.mediaList.push({ type: 'video', src: project.videoUrl, label: 'PV预览', cover: videoCover });
+                    if (project.videoUrl2) this.mediaList.push({ type: 'video', src: project.videoUrl2, label: '演示视频', cover: videoCover });
+                    if (project.screenshots) project.screenshots.forEach(s => this.mediaList.push({ type: 'image', src: s, label: '截图' }));
+                    const hasVideo = !!project.videoUrl;
+                    const isLocalVideo = project.videoUrl && !project.videoUrl.includes('bilibili');
+                    const hasMedia = this.mediaList.length > 0;
+                    html += `<div class="modal-media-section"><div class="modal-main-media">`;
+                    if (hasMedia) {
+                        if (hasVideo) {
+                            html += isLocalVideo ? `<video src="${project.videoUrl}" controls style="width:100%;height:100%;"></video>` : `<iframe src="${project.videoUrl}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>`;
+                        } else {
+                            html += `<img src="${this.mediaList[0].src}" alt="${project.title}">`;
+                        }
+                    } else {
+                        html += '<div class="modal-media-placeholder">敬请期待</div>';
+                    }
+                    html += `</div>`;
+                    if (hasMedia) {
+                        html += `<div class="modal-thumbnails">${this.mediaList.map((m, i) => `<div class="modal-thumbnail ${i === 0 ? 'active' : ''}" data-type="${m.type}" data-src="${m.src}"><img src="${m.type === 'video' ? m.cover : m.src}" alt="${m.label}"></div>`).join('')}</div>`;
+                    }
+                    html += `</div>`;
+                }
+                // 内容区域
+                html += '<div class="modal-body"><div class="modal-main-content">';
+                html += `<div class="modal-header"><div class="modal-category">${project.category}</div><h2 class="modal-title">${project.title}</h2><div class="modal-subtitle">${project.subtitle}</div></div>`;
+                // 按钮
+                html += '<div class="modal-actions">';
+                if (project.type === 'demo') {
+                    if (project.playUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.playUrl}')">试玩链接</button>`;
+                    if (project.gameUrl) html += `<a href="${project.gameUrl}" download class="modal-btn modal-btn-primary">下载游戏</a>`;
+                    if (project.relatedDoc) html += `<button class="modal-btn modal-btn-outline" onclick="projectModal.open(projectsData['${project.relatedDoc}'])">查看策划案</button>`;
+                    if (project.relatedDoc) html += `<a href="${projectsData[project.relatedDoc]?.docxUrl || '#'}" download class="modal-btn modal-btn-outline">下载策划案</a>`;
+                } else if (project.type === 'design') {
+                    if (project.pdfUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.pdfUrl}')">在线预览</button>`;
+                    if (project.docxUrl) html += `<a href="${project.docxUrl}" download class="modal-btn modal-btn-primary">下载文档</a>`;
+                } else {
+                    if (project.pdfUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.pdfUrl}')">在线预览</button>`;
+                    if (project.docxUrl) html += `<a href="${project.docxUrl}" download class="modal-btn modal-btn-primary">下载文档</a>`;
+                }
+                html += '</div>';
+                html += `<div class="modal-section"><h3 class="modal-section-title">项目介绍</h3><p>${project.description}</p></div>`;
+                html += '</div>';
+                // 侧边栏
+                html += `<div class="modal-sidebar">
+                    <div class="modal-info-block"><div class="modal-info-label">个人角色</div><div class="modal-info-value">${project.role}</div></div>
+                    <div class="modal-info-block"><div class="modal-info-label">开发周期</div><div class="modal-info-value">${project.duration}</div></div>
+                    <div class="modal-info-block"><div class="modal-info-label">团队规模</div><div class="modal-info-value">${project.teamSize}</div></div>
+                    <div class="modal-info-block"><div class="modal-info-label">使用工具</div><div class="modal-info-value">${project.tools.join('、')}</div></div>
+                    <div class="modal-info-block"><div class="modal-info-label">作品类型</div><div class="modal-info-value">${project.type === 'demo' ? '游戏Demo' : project.type === 'design' ? '策划文档' : '分析文档'}</div></div>
+                </div>`;
+                html += '</div>';
+                return html;
+            }
+        }
+
+        // 游戏分类切换
+        function switchMainTab(type) {
+            document.querySelectorAll('.gaming-main-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.main === type);
+            });
+            document.getElementById('single-games').classList.toggle('hidden', type !== 'single');
+            document.getElementById('online-games').classList.toggle('hidden', type !== 'online');
+            if (type === 'single') switchSubTab('jrpg');
+            else switchSubTab('mmo');
+        }
+
+        function switchSubTab(tabName) {
+            const visibleSection = document.querySelector('.gaming-sub-section:not(.hidden)');
+            if (!visibleSection) return;
+            visibleSection.querySelectorAll('.gaming-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            visibleSection.querySelectorAll('.gaming-section').forEach(section => section.classList.remove('active'));
+            const targetSection = document.getElementById('tab-' + tabName);
+            if (targetSection) targetSection.classList.add('active');
+        }
+
+        // 背景星点生成
+        class BackgroundStars {
+            constructor() {
+                this.container = document.getElementById('bgStars');
+                this.init();
+            }
+            init() {
+                if (!this.container) return;
+                const starCount = 40;
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.setProperty('--duration', (4 + Math.random() * 6) + 's');
+                    star.style.setProperty('--delay', (Math.random() * 5) + 's');
+                    this.container.appendChild(star);
+                }
+            }
+        }
+
+        // 鼠标跟随光效
+        class CursorGlow {
+            constructor() {
+                this.glow = null;
+                this.init();
+            }
+            init() {
+                this.glow = document.createElement('div');
+                this.glow.className = 'cursor-glow';
+                document.body.appendChild(this.glow);
+                document.addEventListener('mousemove', (e) => {
+                    requestAnimationFrame(() => {
+                        this.glow.style.left = e.clientX + 'px';
+                        this.glow.style.top = e.clientY + 'px';
+                    });
+                });
+                document.addEventListener('mouseleave', () => { this.glow.style.opacity = '0'; });
+                document.addEventListener('mouseenter', () => { this.glow.style.opacity = '1'; });
+            }
+        }
+
+        // 滚动动画
+        class ScrollAnimations {
+            constructor() { this.init(); }
+            init() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) entry.target.classList.add('visible');
+                    });
+                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+                document.querySelectorAll('.section-inner, .featured-item, .gaming-main-tab, .timeline-item, .contact-link').forEach(el => {
+                    el.classList.add('fade-in');
+                    observer.observe(el);
+                });
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new ParticleBackground();
+            new BackgroundStars();
+            new PortfolioFilter();
+            new PortfolioToggle();
+            new BackToTop();
+            new NavHighlight();
+            langSwitch = new LanguageSwitch();
+            new TimelineToggle();
+            projectModal = new ProjectModal();
+            new CursorGlow();
+            new ScrollAnimations();
+            setTimeout(() => { document.body.style.opacity = '1'; }, 100);
+        });
+
+        // 初始化EmailJS
+        (function() {
+            emailjs.init("shDxIa9CKyeP9I8-q");
+        })();
+
+        // 表单提交
+        document.querySelector('.contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('.submit-btn');
+            const originalText = btn.textContent;
+            btn.textContent = langSwitch.currentLang === 'zh' ? '发送中...' : 'Sending...';
+            btn.disabled = true;
+            
+            emailjs.sendForm('service_my1s56l', 'template_ffm2cra', e.target)
+                .then(() => {
+                    alert(langSwitch.currentLang === 'zh' ? '消息已发送！我会尽快回复。' : 'Message sent! I will reply soon.');
+                    e.target.reset();
+                })
+                .catch((error) => {
+                    console.error('发送失败:', error);
+                    alert(langSwitch.currentLang === 'zh' ? '发送失败，请稍后重试。' : 'Failed to send, please try again later.');
+                })
+                .finally(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
