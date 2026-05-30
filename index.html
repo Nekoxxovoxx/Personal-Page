@@ -1234,6 +1234,93 @@
             overflow: hidden;
         }
 
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* 标题打字效果 */
+        .hero-name {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-tag {
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-desc {
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-actions {
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        /* 导航栏滚动效果 */
+        .nav {
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            padding: 1rem 4rem;
+            background: rgba(8, 8, 8, 0.98);
+        }
+
+        /* 图片悬停效果 */
+        .about-image {
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* 技能标签动画 */
+        .skill-item {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .skill-item:nth-child(1) { animation-delay: 0.1s; }
+        .skill-item:nth-child(2) { animation-delay: 0.15s; }
+        .skill-item:nth-child(3) { animation-delay: 0.2s; }
+        .skill-item:nth-child(4) { animation-delay: 0.25s; }
+        .skill-item:nth-child(5) { animation-delay: 0.3s; }
+        .skill-item:nth-child(6) { animation-delay: 0.35s; }
+        .skill-item:nth-child(7) { animation-delay: 0.4s; }
+        .skill-item:nth-child(8) { animation-delay: 0.45s; }
+        .skill-item:nth-child(9) { animation-delay: 0.5s; }
+
+        /* 联系卡片动画 */
+        .contact-link {
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .contact-link:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
         /* 弹窗 */
         .modal-overlay {
             position: fixed;
@@ -2445,6 +2532,23 @@
             }
         }
 
+        // 导航栏滚动效果
+        class NavScroll {
+            constructor() {
+                this.nav = document.querySelector('.nav');
+                this.init();
+            }
+            init() {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        this.nav.classList.add('scrolled');
+                    } else {
+                        this.nav.classList.remove('scrolled');
+                    }
+                });
+            }
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
             new ParticleBackground();
@@ -2458,6 +2562,7 @@
             projectModal = new ProjectModal();
             new CursorGlow();
             new ScrollAnimations();
+            new NavScroll();
             setTimeout(() => { document.body.style.opacity = '1'; }, 100);
         });
 
