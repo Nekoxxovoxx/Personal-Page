@@ -166,6 +166,120 @@
             50% { opacity: 0.6; }
         }
 
+        /* 浮动光点效果 */
+        .bg-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--orb-color), transparent 70%);
+            animation: floatOrb var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+            opacity: 0.4;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(30px, -40px) scale(1.1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-20px, 20px) scale(0.9);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(40px, 30px) scale(1.05);
+                opacity: 0.45;
+            }
+        }
+
+        /* 游戏像素点效果 */
+        .bg-pixels {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(100, 150, 255, 0.3);
+            animation: pixelFloat var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes pixelFloat {
+            0%, 100% { 
+                transform: translateY(0) scale(1);
+                opacity: 0.2;
+            }
+            50% { 
+                transform: translateY(-20px) scale(1.5);
+                opacity: 0.6;
+            }
+        }
+
+        /* 光环脉冲效果 */
+        .bg-pulse {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(100, 100, 200, 0.05);
+            border-radius: 50%;
+            animation: pulseExpand 8s ease-out infinite;
+        }
+
+        .pulse-ring:nth-child(2) { animation-delay: 2s; }
+        .pulse-ring:nth-child(3) { animation-delay: 4s; }
+        .pulse-ring:nth-child(4) { animation-delay: 6s; }
+
+        @keyframes pulseExpand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.3;
+                border-color: rgba(100, 100, 200, 0.15);
+            }
+            100% {
+                width: 150vw;
+                height: 150vw;
+                opacity: 0;
+                border-color: rgba(100, 100, 200, 0);
+            }
+        }
+
         /* 导航栏 */
         .nav {
             position: fixed;
@@ -212,9 +326,9 @@
         .nav-links a {
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 400;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             transition: var(--transition);
             position: relative;
@@ -238,12 +352,12 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.6rem 1.2rem;
+            padding: 0.7rem 1.4rem;
             background: linear-gradient(135deg, #2a2a4a, #3a3a6a);
             border: 1px solid #4a4a8a;
             color: #e8e8f0;
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             letter-spacing: 1.5px;
             transition: all 0.3s ease;
         }
@@ -325,11 +439,11 @@
 
         .btn-primary {
             display: inline-block;
-            padding: 1rem 2.5rem;
+            padding: 1.1rem 2.8rem;
             background: var(--text-primary);
             color: var(--bg-primary);
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 500;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -361,11 +475,11 @@
 
         .btn-outline {
             display: inline-block;
-            padding: 1rem 2.5rem;
+            padding: 1.1rem 2.8rem;
             background: transparent;
             color: var(--text-primary);
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -498,7 +612,7 @@
         .about-tag {
             padding: 0.5rem 1.2rem;
             border: 1px solid var(--border);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--text-secondary);
@@ -595,7 +709,7 @@
             border: none;
             color: var(--text-muted);
             font-family: inherit;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             cursor: pointer;
@@ -790,12 +904,12 @@
         }
 
         .gaming-tab {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             color: var(--text-muted);
             font-family: inherit;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -826,16 +940,18 @@
             border: none;
             position: relative;
             background: var(--bg-secondary);
+            box-shadow: 0 0 20px rgba(123, 104, 238, 0.35), 0 0 40px rgba(100, 100, 200, 0.15), inset 0 0 20px rgba(123, 104, 238, 0.05);
         }
 
         .gaming-card.perfect::before {
             content: '';
             position: absolute;
-            inset: -2px;
-            background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #7b68ee, #ff0080);
+            inset: -3px;
+            background: linear-gradient(45deg, #ff0066, #ff6600, #00ffcc, #6666ff, #ff0066);
             background-size: 300% 300%;
             z-index: 0;
-            animation: rainbowBorder 4s ease infinite;
+            animation: rainbowBorder 3s ease infinite;
+            opacity: 1;
         }
 
         .gaming-card.perfect::after {
@@ -859,7 +975,7 @@
 
         .gaming-card.perfect:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(123, 104, 238, 0.25);
+            box-shadow: 0 0 30px rgba(123, 104, 238, 0.5), 0 0 60px rgba(100, 100, 200, 0.25), inset 0 0 30px rgba(123, 104, 238, 0.1);
         }
 
         .gaming-card-image {
@@ -880,10 +996,10 @@
 
         .gaming-badge {
             display: inline-block;
-            padding: 0.2rem 0.6rem;
+            padding: 0.25rem 0.7rem;
             background: linear-gradient(135deg, #1a1a2e, #2a2a4a);
             border: 1px solid #3a3a5a;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             letter-spacing: 1px;
             color: #b8b8d0;
         }
@@ -1124,12 +1240,12 @@
 
         .submit-btn {
             justify-self: center;
-            padding: 1rem 3rem;
+            padding: 1.1rem 3rem;
             background: var(--text-primary);
             border: none;
             color: var(--bg-primary);
             font-family: inherit;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 500;
             letter-spacing: 2.5px;
             text-transform: uppercase;
@@ -1490,7 +1606,7 @@
             border-top: 1px solid var(--border);
         }
 
-        .footer p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; }
+        .footer p { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 2px; }
 
         /* 响应式 */
         @media (max-width: 1024px) {
@@ -1526,6 +1642,14 @@
     <div class="noise-overlay"></div>
     <div class="bg-grid"></div>
     <div class="bg-stars" id="bgStars"></div>
+    <div class="bg-orbs" id="bgOrbs"></div>
+    <div class="bg-pixels" id="bgPixels"></div>
+    <div class="bg-pulse">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+    </div>
     <div class="gradient-orb gradient-orb-1"></div>
     <div class="gradient-orb gradient-orb-2"></div>
     <div class="gradient-orb gradient-orb-3"></div>
@@ -2474,6 +2598,66 @@
             if (targetSection) targetSection.classList.add('active');
         }
 
+        // 背景浮动光点效果
+        class BackgroundOrbs {
+            constructor() {
+                this.container = document.getElementById('bgOrbs');
+                this.init();
+            }
+            init() {
+                if (!this.container) return;
+                const orbCount = 12;
+                const colors = [
+                    'rgba(100, 130, 255, 0.3)',
+                    'rgba(130, 100, 255, 0.25)',
+                    'rgba(180, 100, 220, 0.2)',
+                    'rgba(100, 180, 220, 0.2)',
+                    'rgba(150, 120, 255, 0.25)'
+                ];
+                for (let i = 0; i < orbCount; i++) {
+                    const orb = document.createElement('div');
+                    orb.className = 'floating-orb';
+                    const size = 60 + Math.random() * 120;
+                    orb.style.width = size + 'px';
+                    orb.style.height = size + 'px';
+                    orb.style.left = Math.random() * 100 + '%';
+                    orb.style.top = Math.random() * 100 + '%';
+                    orb.style.setProperty('--orb-color', colors[Math.floor(Math.random() * colors.length)]);
+                    orb.style.setProperty('--duration', (15 + Math.random() * 20) + 's');
+                    orb.style.setProperty('--delay', (Math.random() * 10) + 's');
+                    this.container.appendChild(orb);
+                }
+            }
+        }
+
+        // 背景像素点效果
+        class BackgroundPixels {
+            constructor() {
+                this.container = document.getElementById('bgPixels');
+                this.init();
+            }
+            init() {
+                if (!this.container) return;
+                const pixelCount = 30;
+                const colors = [
+                    'rgba(100, 150, 255, 0.3)',
+                    'rgba(150, 100, 255, 0.3)',
+                    'rgba(255, 100, 150, 0.2)',
+                    'rgba(100, 255, 200, 0.2)'
+                ];
+                for (let i = 0; i < pixelCount; i++) {
+                    const pixel = document.createElement('div');
+                    pixel.className = 'pixel';
+                    pixel.style.left = Math.random() * 100 + '%';
+                    pixel.style.top = Math.random() * 100 + '%';
+                    pixel.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    pixel.style.setProperty('--duration', (4 + Math.random() * 6) + 's');
+                    pixel.style.setProperty('--delay', (Math.random() * 5) + 's');
+                    this.container.appendChild(pixel);
+                }
+            }
+        }
+
         // 背景星点生成
         class BackgroundStars {
             constructor() {
@@ -2553,6 +2737,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             new ParticleBackground();
             new BackgroundStars();
+            new BackgroundOrbs();
+            new BackgroundPixels();
             new PortfolioFilter();
             new PortfolioToggle();
             new BackToTop();
