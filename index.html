@@ -1136,6 +1136,15 @@
             font-size: 1rem;
         }
 
+        .contact-hint {
+            font-size: 0.85rem !important;
+            color: var(--text-muted) !important;
+            margin-bottom: 2rem !important;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .contact-links {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -2109,44 +2118,12 @@
         <section class="section" id="contact">
             <div class="section-inner">
                 <div class="contact-section">
-                    <h2 data-zh="取得联系" data-en="Get in Touch">取得联系</h2>
-                    <p data-zh="如果你对游戏设计感兴趣，或者有合作机会，欢迎与我交流。" data-en="If you're interested in game design or have collaboration opportunities, feel free to reach out.">如果你对游戏设计感兴趣，或者有合作机会，欢迎与我交流。</p>
-                    <div class="contact-links">
-                        <div class="contact-link">
-                            <div class="contact-link-icon">✉</div>
-                            <span>3023660939@qq.com</span>
-                        </div>
-                        <div class="contact-link">
-                            <div class="contact-link-icon">📱</div>
-                            <span>19180795253</span>
-                        </div>
-                        <a href="https://github.com/Nekovoxx" target="_blank" class="contact-link">
-                            <div class="contact-link-icon">GH</div>
-                            <span>GitHub</span>
-                        </a>
-                        <div class="contact-link">
-                            <div class="contact-link-icon">微</div>
-                            <span>Echoxxovojj</span>
-                        </div>
-                    </div>
+                    <h2 data-zh="直接发送邮件" data-en="Send Email Directly">直接发送邮件</h2>
+                    <p class="contact-hint" data-zh="在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱" data-en="Fill in your message below. Please include your contact information and purpose so I can reply promptly.">在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱</p>
                     <form class="contact-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="text" placeholder=" " required data-zh-placeholder="你的名字" data-en-placeholder="Your Name">
-                                <label data-zh="你的名字" data-en="Your Name">你的名字</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" placeholder=" " required data-zh-placeholder="电子邮箱" data-en-placeholder="Email">
-                                <label data-zh="电子邮箱" data-en="Email">电子邮箱</label>
-                            </div>
-                        </div>
                         <div class="form-group">
-                            <input type="text" placeholder=" " required data-zh-placeholder="主题" data-en-placeholder="Subject">
-                            <label data-zh="主题" data-en="Subject">主题</label>
-                        </div>
-                        <div class="form-group">
-                            <textarea placeholder=" " required data-zh-placeholder="想说的话" data-en-placeholder="Your Message"></textarea>
-                            <label data-zh="想说的话" data-en="Your Message">想说的话</label>
+                            <textarea placeholder=" " required rows="8" data-zh-placeholder="请在此处写下你的消息内容。请务必在消息中写清楚你的联系方式（如邮箱、微信等）和来电目的，以便我及时回复。" data-en-placeholder="Please write your message here. Include your contact info (email, WeChat, etc.) and purpose so I can reply promptly."></textarea>
+                            <label data-zh="消息内容" data-en="Message">消息内容</label>
                         </div>
                         <button type="submit" class="submit-btn" data-zh="发送消息" data-en="Send Message">发送消息</button>
                     </form>
