@@ -1164,16 +1164,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
             padding: 1.2rem 0.5rem;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
         }
 
         .contact-link:hover {
             color: var(--text-primary);
             border-color: var(--border-light);
             transform: translateY(-3px);
+        }
+
+        .copy-hint {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-link:hover .copy-hint {
+            opacity: 1;
+        }
+
+        .contact-link.copied {
+            border-color: #4caf50;
+        }
+
+        .contact-link.copied .copy-hint {
+            opacity: 1;
+            color: #4caf50;
         }
 
         .contact-link-icon {
@@ -1191,6 +1213,16 @@
             background: var(--text-primary);
             color: var(--bg-primary);
             border-color: var(--text-primary);
+        }
+
+        .message-box {
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+        }
+
+        .message-box textarea {
+            border-bottom: none;
         }
 
         .contact-form {
@@ -2118,10 +2150,31 @@
         <section class="section" id="contact">
             <div class="section-inner">
                 <div class="contact-section">
+                    <div class="contact-links">
+                        <div class="contact-link" onclick="copyToClipboard('3023660939@qq.com', this)">
+                            <div class="contact-link-icon">✉</div>
+                            <span>3023660939@qq.com</span>
+                            <span class="copy-hint">点击复制</span>
+                        </div>
+                        <div class="contact-link" onclick="copyToClipboard('19180795253', this)">
+                            <div class="contact-link-icon">📱</div>
+                            <span>19180795253</span>
+                            <span class="copy-hint">点击复制</span>
+                        </div>
+                        <a href="https://github.com/Nekovoxx" target="_blank" class="contact-link">
+                            <div class="contact-link-icon">GH</div>
+                            <span>GitHub</span>
+                        </a>
+                        <div class="contact-link" onclick="copyToClipboard('Echoxxovojj', this)">
+                            <div class="contact-link-icon">微</div>
+                            <span>Echoxxovojj</span>
+                            <span class="copy-hint">点击复制</span>
+                        </div>
+                    </div>
                     <h2 data-zh="直接发送邮件" data-en="Send Email Directly">直接发送邮件</h2>
                     <p class="contact-hint" data-zh="在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱" data-en="Fill in your message below. Please include your contact information and purpose so I can reply promptly.">在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱</p>
                     <form class="contact-form">
-                        <div class="form-group">
+                        <div class="form-group message-box">
                             <textarea placeholder=" " required rows="8" data-zh-placeholder="请在此处写下你的消息内容。请务必在消息中写清楚你的联系方式（如邮箱、微信等）和来电目的，以便我及时回复。" data-en-placeholder="Please write your message here. Include your contact info (email, WeChat, etc.) and purpose so I can reply promptly."></textarea>
                             <label data-zh="消息内容" data-en="Message">消息内容</label>
                         </div>
@@ -2708,6 +2761,22 @@
                     }
                 });
             }
+        }
+
+        // 复制到剪贴板功能
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                element.classList.add('copied');
+                const hint = element.querySelector('.copy-hint');
+                if (hint) {
+                    const originalText = hint.textContent;
+                    hint.textContent = '已复制';
+                    setTimeout(() => {
+                        element.classList.remove('copied');
+                        hint.textContent = originalText;
+                    }, 2000);
+                }
+            });
         }
 
         // 初始化
