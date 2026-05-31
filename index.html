@@ -1216,9 +1216,9 @@
         }
 
         .message-box {
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            background: var(--bg-secondary);
+            border: none;
+            padding: 0;
+            background: transparent;
         }
 
         .message-box textarea {
@@ -1227,8 +1227,42 @@
 
         .contact-form {
             display: grid;
-            gap: 1.5rem;
+            gap: 0;
             text-align: left;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            background: var(--bg-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group { position: relative; }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 300;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group textarea { 
+            resize: none; 
+            height: 150px;
+            border-bottom: none;
         }
 
         .form-row {
