@@ -1216,22 +1216,28 @@
         }
 
         .message-box {
-            border: none;
-            padding: 0;
-            background: transparent;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            background: var(--bg-secondary);
         }
 
         .message-box textarea {
-            border-bottom: none;
+            width: 100%;
+            height: 200px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 300;
+            outline: none;
+            resize: none;
         }
 
         .contact-form {
             display: grid;
-            gap: 0;
+            gap: 2rem;
             text-align: left;
-            border: 1px solid var(--border);
-            padding: 2rem;
-            background: var(--bg-secondary);
             max-width: 600px;
             margin: 0 auto;
         }
@@ -1250,7 +1256,6 @@
             padding: 1rem 0;
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--border);
             color: var(--text-primary);
             font-family: inherit;
             font-size: 0.9rem;
@@ -1261,8 +1266,7 @@
 
         .form-group textarea { 
             resize: none; 
-            height: 150px;
-            border-bottom: none;
+            height: 200px;
         }
 
         .form-row {
@@ -2208,9 +2212,8 @@
                     <h2 data-zh="直接发送邮件" data-en="Send Email Directly">直接发送邮件</h2>
                     <p class="contact-hint" data-zh="在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱" data-en="Fill in your message below. Please include your contact information and purpose so I can reply promptly.">在下方填写消息内容，请务必写清楚你的联系方式和来电目的，消息将直接发送到我的QQ邮箱</p>
                     <form class="contact-form">
-                        <div class="form-group message-box">
+                        <div class="message-box">
                             <textarea name="message" placeholder=" " required rows="8" data-zh-placeholder="请在此处写下你的消息内容。请务必在消息中写清楚你的联系方式（如邮箱、微信等）和来电目的，以便我及时回复。" data-en-placeholder="Please write your message here. Include your contact info (email, WeChat, etc.) and purpose so I can reply promptly."></textarea>
-                            <label data-zh="消息内容" data-en="Message">消息内容</label>
                         </div>
                         <button type="submit" class="submit-btn" data-zh="发送消息" data-en="Send Message">发送消息</button>
                     </form>
