@@ -2809,10 +2809,14 @@
             
             const btn = e.target.querySelector('.submit-btn');
             const originalText = btn.textContent;
+            const message = e.target.querySelector('textarea[name="message"]').value;
+            
             btn.textContent = langSwitch.currentLang === 'zh' ? '发送中...' : 'Sending...';
             btn.disabled = true;
             
-            emailjs.sendForm('service_my1s56l', 'template_ffm2cra', e.target)
+            emailjs.send('service_my1s56l', 'template_ffm2cra', {
+                message: message
+            })
                 .then(() => {
                     alert(langSwitch.currentLang === 'zh' ? '消息已发送！我会尽快回复。' : 'Message sent! I will reply soon.');
                     e.target.reset();
