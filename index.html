@@ -1753,6 +1753,15 @@
         .modal-btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
         .modal-btn-outline:hover { border-color: var(--text-secondary); }
 
+        .modal-download-note {
+            flex-basis: 100%;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
         .modal-section { margin-bottom: 2.5rem; }
 
         .modal-section-title {
@@ -2346,7 +2355,7 @@
                 tools: ['Unity', 'C#', 'Aseprite'], duration: '2026.02 - 至今', teamSize: '1人',
                 videoUrl: '', videoUrl2: 'https://player.bilibili.com/player.html?bvid=BV1QsjG6aEAP&autoplay=0', videoCover: 'images/余烬/1.png',
                 screenshots: ['images/余烬/1.png','images/余烬/2.png','images/余烬/3.png','images/余烬/4.png','images/余烬/5.png','images/余烬/6.png','images/余烬/7.png','images/余烬/8.png'],
-                documents: [], playUrl: '', relatedDoc: ''
+                documents: [], playUrl: '', gameUrl: 'https://github.com/Nekoxxovoxx/Personal-Page/releases/download/v1.0/YJ.zip', relatedDoc: ''
             },
             'hero-arsenal': {
                 type: 'demo', category: '腾讯极限开发大赛 · 优胜奖', title: '勇者扑街兵工厂', subtitle: '72小时极限开发作品',
@@ -2722,6 +2731,7 @@
                 if (project.type === 'demo') {
                     if (project.playUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.playUrl}')">试玩链接</button>`;
                     if (project.gameUrl) html += `<a href="${project.gameUrl}" download class="modal-btn modal-btn-primary">下载游戏</a>`;
+                    if (project.gameUrl) html += '<div class="modal-download-note">游戏包体较大，请使用电脑下载并解压运行。手机端建议先收藏页面。</div>';
                     if (project.relatedDoc) html += `<button class="modal-btn modal-btn-outline" onclick="projectModal.open(projectsData['${project.relatedDoc}'])">查看策划案</button>`;
                     if (project.relatedDoc) html += `<a href="${projectsData[project.relatedDoc]?.docxUrl || '#'}" download class="modal-btn modal-btn-outline">下载策划案</a>`;
                 } else if (project.type === 'design') {
