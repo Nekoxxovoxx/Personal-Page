@@ -6,6 +6,7 @@
     <title>逸轩 - 游戏策划作品集</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -660,6 +661,324 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--text-secondary);
+        }
+
+        .about-actions {
+            display: flex;
+            margin-top: 1.5rem;
+        }
+
+        .certificate-trigger-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            min-height: 42px;
+            padding: 0.65rem 1.2rem;
+            background: rgba(12, 12, 18, 0.82);
+            border: 1px solid #4a4a68;
+            color: #d6d6e2;
+            font: inherit;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .certificate-trigger-btn i { font-size: 1.05rem; }
+
+        .certificate-trigger-btn:hover,
+        .certificate-trigger-btn:focus-visible {
+            border-color: #7779a6;
+            background: rgba(28, 28, 42, 0.95);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        body.certificate-drawer-open { overflow: hidden; }
+
+        .certificate-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .certificate-overlay.active {
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .certificate-backdrop {
+            position: absolute;
+            inset: 0;
+            border: 0;
+            background: rgba(0, 0, 0, 0.58);
+            opacity: 0;
+            cursor: default;
+            transition: opacity 0.35s ease;
+        }
+
+        .certificate-overlay.active .certificate-backdrop { opacity: 1; }
+
+        .certificate-drawer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: min(610px, 39vw);
+            min-width: 520px;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(8, 9, 13, 0.985);
+            border-left: 1px solid #4a4b6c;
+            box-shadow: -28px 0 70px rgba(0, 0, 0, 0.52);
+            transform: translateX(100%);
+            transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .certificate-drawer::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 2px;
+            background: rgba(111, 113, 188, 0.5);
+            pointer-events: none;
+        }
+
+        .certificate-overlay.active .certificate-drawer { transform: translateX(0); }
+
+        .certificate-drawer-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 2rem;
+            padding: 2.5rem 2.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .certificate-drawer-title {
+            font-size: 1.65rem;
+            font-weight: 300;
+            line-height: 1.25;
+        }
+
+        .certificate-drawer-subtitle {
+            margin-top: 0.45rem;
+            color: var(--text-muted);
+            font-size: 0.67rem;
+            letter-spacing: 1.8px;
+        }
+
+        .certificate-close-btn,
+        .certificate-viewer-close {
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .certificate-close-btn i,
+        .certificate-viewer-close i { font-size: 1.2rem; }
+
+        .certificate-close-btn:hover,
+        .certificate-close-btn:focus-visible,
+        .certificate-viewer-close:hover,
+        .certificate-viewer-close:focus-visible {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .certificate-drawer-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 1.75rem 2.5rem 2.5rem;
+        }
+
+        .certificate-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .certificate-filter-btn {
+            min-height: 36px;
+            padding: 0.45rem 1rem;
+            border: 1px solid var(--border);
+            background: #0d0e12;
+            color: var(--text-muted);
+            font: inherit;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .certificate-filter-btn:hover,
+        .certificate-filter-btn:focus-visible,
+        .certificate-filter-btn.active {
+            border-color: #666997;
+            background: #181923;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .certificate-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .certificate-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding: 0.85rem;
+            border: 1px solid #292b34;
+            background: #111218;
+            color: inherit;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+        }
+
+        .certificate-card:hover,
+        .certificate-card:focus-visible {
+            border-color: #62658c;
+            background: #15161e;
+            transform: translateY(-3px);
+            outline: none;
+        }
+
+        .certificate-card[hidden] { display: none; }
+
+        .certificate-card-image {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            background: #eceae4;
+        }
+
+        .certificate-card-image img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.4s ease;
+        }
+
+        .certificate-card:hover .certificate-card-image img { transform: scale(1.025); }
+
+        .certificate-card-view {
+            position: absolute;
+            right: 0.65rem;
+            bottom: 0.65rem;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(8, 8, 12, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #fff;
+        }
+
+        .certificate-card-title {
+            margin-top: 1rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.55;
+        }
+
+        .certificate-card-meta {
+            margin-top: 0.55rem;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            line-height: 1.55;
+        }
+
+        .certificate-card-date {
+            display: block;
+            margin-top: 0.5rem;
+            color: #777988;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        .certificate-empty {
+            display: none;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .certificate-empty.visible { display: block; }
+
+        .certificate-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 1300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.94);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .certificate-viewer.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .certificate-viewer-figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: min(94vw, 1100px);
+            max-height: 92vh;
+            margin: 0;
+        }
+
+        .certificate-viewer-image {
+            display: block;
+            max-width: 100%;
+            max-height: calc(92vh - 4.5rem);
+            object-fit: contain;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+        }
+
+        .certificate-viewer-caption {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            text-align: center;
+        }
+
+        .certificate-viewer-close {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(8, 8, 8, 0.7);
         }
 
         .about-stats {
@@ -1825,6 +2144,22 @@
             .modal-sidebar { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1.5rem; }
             .form-row { grid-template-columns: 1fr; }
             .footer { padding: 2rem 1.5rem; }
+            .certificate-drawer { width: 100%; min-width: 0; }
+            .certificate-drawer-header { padding: 1.5rem 1.25rem 1.1rem; }
+            .certificate-drawer-body { padding: 1.25rem; }
+            .certificate-grid { grid-template-columns: 1fr; }
+            .certificate-card { padding: 0.75rem; }
+            .certificate-card-image { aspect-ratio: 4 / 5; }
+            .certificate-viewer { padding: 1rem; }
+            .certificate-viewer-close { top: 1rem; right: 1rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .certificate-drawer,
+            .certificate-backdrop,
+            .certificate-viewer,
+            .certificate-card,
+            .certificate-card-image img { transition: none; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -1902,6 +2237,12 @@
                             <span class="about-tag" data-zh="系统策划" data-en="System Design">系统策划</span>
                             <span class="about-tag" data-zh="叙事设计" data-en="Narrative Design">叙事设计</span>
                             <span class="about-tag" data-zh="玩家研究" data-en="Player Research">玩家研究</span>
+                        </div>
+                        <div class="about-actions">
+                            <button class="certificate-trigger-btn" id="certificateTrigger" type="button" aria-controls="certificateOverlay" aria-expanded="false">
+                                <i class="ph ph-certificate" aria-hidden="true"></i>
+                                <span data-zh="证书档案" data-en="Certificates">证书档案</span>
+                            </button>
                         </div>
                         <div class="about-stats">
                             <div class="stat-item">
@@ -2374,6 +2715,68 @@
         </div>
     </div>
 
+    <div class="certificate-overlay" id="certificateOverlay" aria-hidden="true">
+        <button class="certificate-backdrop" type="button" aria-label="关闭证书档案" data-certificate-close></button>
+        <aside class="certificate-drawer" role="dialog" aria-modal="true" aria-labelledby="certificateDrawerTitle">
+            <header class="certificate-drawer-header">
+                <div>
+                    <h2 class="certificate-drawer-title" id="certificateDrawerTitle" data-zh="荣誉与证书" data-en="Honors & Certificates">荣誉与证书</h2>
+                    <p class="certificate-drawer-subtitle">HONORS &amp; CERTIFICATES · 3</p>
+                </div>
+                <button class="certificate-close-btn" id="certificateClose" type="button" aria-label="关闭证书档案">
+                    <i class="ph ph-x" aria-hidden="true"></i>
+                </button>
+            </header>
+            <div class="certificate-drawer-body">
+                <div class="certificate-filters" role="group" aria-label="证书分类">
+                    <button class="certificate-filter-btn active" type="button" data-filter="all" aria-pressed="true" data-zh="全部" data-en="All">全部</button>
+                    <button class="certificate-filter-btn" type="button" data-filter="competition" aria-pressed="false" data-zh="竞赛证明" data-en="Competition">竞赛证明</button>
+                    <button class="certificate-filter-btn" type="button" data-filter="training" aria-pressed="false" data-zh="课程结业" data-en="Training">课程结业</button>
+                </div>
+                <div class="certificate-grid" id="certificateGrid">
+                    <button class="certificate-card" type="button" data-category="competition" data-src="zhengshu/腾讯极限开发大赛证书.webp" data-title-zh="腾讯游戏高校极限开发赛参赛证明" data-title-en="Tencent University Extreme Game Development Challenge Certificate">
+                        <span class="certificate-card-image">
+                            <img src="zhengshu/腾讯极限开发大赛证书.webp" alt="腾讯游戏高校极限开发赛参赛证明" loading="lazy">
+                            <span class="certificate-card-view"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i></span>
+                        </span>
+                        <span class="certificate-card-title" data-zh="腾讯游戏高校极限开发赛参赛证明" data-en="Tencent University Extreme Game Development Challenge">腾讯游戏高校极限开发赛参赛证明</span>
+                        <span class="certificate-card-meta" data-zh="腾讯招聘 · 腾讯互动娱乐事业群" data-en="Tencent Recruitment · IEG">腾讯招聘 · 腾讯互动娱乐事业群</span>
+                        <span class="certificate-card-date">2026.03</span>
+                    </button>
+                    <button class="certificate-card" type="button" data-category="training" data-src="zhengshu/腾讯青科实训营证书.webp" data-title-zh="腾讯游戏「开局一课」结课证书" data-title-en="Tencent Games Opening Course Completion Certificate">
+                        <span class="certificate-card-image">
+                            <img src="zhengshu/腾讯青科实训营证书.webp" alt="腾讯游戏开局一课结课证书" loading="lazy">
+                            <span class="certificate-card-view"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i></span>
+                        </span>
+                        <span class="certificate-card-title" data-zh="腾讯游戏「开局一课」结课证书" data-en="Tencent Games Opening Course Completion Certificate">腾讯游戏「开局一课」结课证书</span>
+                        <span class="certificate-card-meta" data-zh="腾讯学堂 · 青科实训营" data-en="Tencent Academy · Youth Training Camp">腾讯学堂 · 青科实训营</span>
+                        <span class="certificate-card-date">2026.06</span>
+                    </button>
+                    <button class="certificate-card" type="button" data-category="training" data-src="zhengshu/腾讯光核高校共创营证书.webp" data-title-zh="腾讯光核高校共创营实战训练结营证书" data-title-en="Tencent Guanghe University Co-Creation Camp Certificate">
+                        <span class="certificate-card-image">
+                            <img src="zhengshu/腾讯光核高校共创营证书.webp" alt="腾讯光核高校共创营实战训练结营证书" loading="lazy">
+                            <span class="certificate-card-view"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i></span>
+                        </span>
+                        <span class="certificate-card-title" data-zh="腾讯光核高校共创营实战训练结营证书" data-en="Tencent Guanghe University Co-Creation Camp Certificate">腾讯光核高校共创营实战训练结营证书</span>
+                        <span class="certificate-card-meta" data-zh="腾讯光子工作室群 · 腾讯招聘" data-en="Tencent Lightspeed Studios · Tencent Recruitment">腾讯光子工作室群 · 腾讯招聘</span>
+                        <span class="certificate-card-date">2026.07</span>
+                    </button>
+                </div>
+                <p class="certificate-empty" id="certificateEmpty" data-zh="当前分类暂无证书" data-en="No certificates in this category">当前分类暂无证书</p>
+            </div>
+        </aside>
+    </div>
+
+    <div class="certificate-viewer" id="certificateViewer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="证书大图预览">
+        <button class="certificate-viewer-close" id="certificateViewerClose" type="button" aria-label="关闭证书预览">
+            <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+        <figure class="certificate-viewer-figure">
+            <img class="certificate-viewer-image" id="certificateViewerImage" src="" alt="">
+            <figcaption class="certificate-viewer-caption" id="certificateViewerCaption"></figcaption>
+        </figure>
+    </div>
+
     <script>
         // 作品数据
         const projectsData = {
@@ -2667,6 +3070,110 @@
 
         // 弹窗控制
         let projectModal;
+
+        class CertificateGallery {
+            constructor() {
+                this.trigger = document.getElementById('certificateTrigger');
+                this.overlay = document.getElementById('certificateOverlay');
+                this.drawer = this.overlay?.querySelector('.certificate-drawer');
+                this.closeBtn = document.getElementById('certificateClose');
+                this.viewer = document.getElementById('certificateViewer');
+                this.viewerImage = document.getElementById('certificateViewerImage');
+                this.viewerCaption = document.getElementById('certificateViewerCaption');
+                this.viewerClose = document.getElementById('certificateViewerClose');
+                this.filterBtns = [...document.querySelectorAll('.certificate-filter-btn')];
+                this.cards = [...document.querySelectorAll('.certificate-card')];
+                this.lastFocused = null;
+                this.init();
+            }
+
+            init() {
+                if (!this.trigger || !this.overlay || !this.drawer) return;
+                this.trigger.addEventListener('click', () => this.open());
+                this.closeBtn.addEventListener('click', () => this.close());
+                this.overlay.querySelectorAll('[data-certificate-close]').forEach(btn => btn.addEventListener('click', () => this.close()));
+                this.filterBtns.forEach(btn => btn.addEventListener('click', () => this.filter(btn.dataset.filter)));
+                this.cards.forEach(card => card.addEventListener('click', () => this.openViewer(card)));
+                this.viewerClose.addEventListener('click', () => this.closeViewer());
+                this.viewer.addEventListener('click', (event) => { if (event.target === this.viewer) this.closeViewer(); });
+                document.addEventListener('keydown', (event) => this.handleKeydown(event));
+            }
+
+            open() {
+                this.lastFocused = document.activeElement;
+                this.overlay.classList.add('active');
+                this.overlay.setAttribute('aria-hidden', 'false');
+                this.trigger.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('certificate-drawer-open');
+                requestAnimationFrame(() => this.closeBtn.focus());
+            }
+
+            close() {
+                this.closeViewer(false);
+                this.overlay.classList.remove('active');
+                this.overlay.setAttribute('aria-hidden', 'true');
+                this.trigger.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('certificate-drawer-open');
+                if (this.lastFocused) this.lastFocused.focus();
+            }
+
+            filter(category) {
+                this.filterBtns.forEach(btn => {
+                    const active = btn.dataset.filter === category;
+                    btn.classList.toggle('active', active);
+                    btn.setAttribute('aria-pressed', String(active));
+                });
+                let visibleCount = 0;
+                this.cards.forEach(card => {
+                    const visible = category === 'all' || card.dataset.category === category;
+                    card.hidden = !visible;
+                    if (visible) visibleCount += 1;
+                });
+                document.getElementById('certificateEmpty').classList.toggle('visible', visibleCount === 0);
+            }
+
+            openViewer(card) {
+                const lang = langSwitch?.currentLang || 'zh';
+                const title = card.dataset[lang === 'en' ? 'titleEn' : 'titleZh'];
+                this.viewerImage.src = card.dataset.src;
+                this.viewerImage.alt = title;
+                this.viewerCaption.textContent = title;
+                this.viewer.classList.add('active');
+                this.viewer.setAttribute('aria-hidden', 'false');
+                requestAnimationFrame(() => this.viewerClose.focus());
+            }
+
+            closeViewer(restoreFocus = true) {
+                if (!this.viewer.classList.contains('active')) return;
+                this.viewer.classList.remove('active');
+                this.viewer.setAttribute('aria-hidden', 'true');
+                this.viewerImage.src = '';
+                if (restoreFocus) this.drawer.querySelector('.certificate-card:not([hidden])')?.focus();
+            }
+
+            handleKeydown(event) {
+                if (event.key === 'Escape') {
+                    if (this.viewer.classList.contains('active')) this.closeViewer();
+                    else if (this.overlay.classList.contains('active')) this.close();
+                    return;
+                }
+                if (event.key !== 'Tab' || !this.overlay.classList.contains('active')) return;
+                const container = this.viewer.classList.contains('active') ? this.viewer : this.drawer;
+                const focusable = [...container.querySelectorAll('button:not([hidden]), [href], [tabindex]:not([tabindex="-1"])')]
+                    .filter(el => !el.disabled && el.offsetParent !== null);
+                if (!focusable.length) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+
         class ProjectModal {
             constructor() {
                 this.modal = document.getElementById('projectModal');
@@ -2992,6 +3499,7 @@
             new NavHighlight();
             langSwitch = new LanguageSwitch();
             new TimelineToggle();
+            new CertificateGallery();
             projectModal = new ProjectModal();
             new CursorGlow();
             new ScrollAnimations();
