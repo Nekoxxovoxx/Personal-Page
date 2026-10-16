@@ -1052,6 +1052,8 @@
         /* 作品集 */
         .portfolio-header {
             display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
             justify-content: space-between;
             align-items: flex-end;
             margin-bottom: 4rem;
@@ -1064,6 +1066,8 @@
 
         .portfolio-filter {
             display: flex;
+            flex-wrap: wrap;
+            min-width: 0;
             gap: 1.5rem;
         }
 
@@ -1088,7 +1092,7 @@
             transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .portfolio-wrapper.expanded { max-height: 3000px; }
+        .portfolio-wrapper.expanded { max-height: none; }
 
         .portfolio-grid {
             display: grid;
@@ -1168,6 +1172,27 @@
             font-size: 0.8rem;
             color: rgba(255,255,255,0.8);
         }
+
+        .document-card {
+            --document-accent: #85c9b3;
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--document-accent);
+        }
+        .document-card[data-project="equipment-system-design"] { --document-accent: #c4b1e5; }
+        .document-card[data-project="crayon-design-doc"] { --document-accent: #e4b783; }
+        .document-card[data-project="equipment-analysis"] { --document-accent: #8fc3da; }
+        .document-card::after { display: none; }
+        .document-card:focus-visible { outline: 2px solid var(--document-accent); outline-offset: -4px; }
+        .document-card-icon {
+            display: block;
+            padding: 1.5rem;
+            font-size: 2.5rem;
+            color: var(--document-accent);
+        }
+        .document-card .portfolio-info { padding: 1.5rem; opacity: 1; transform: none; }
+        .document-card .portfolio-category { color: var(--document-accent); letter-spacing: 0; }
+        .document-card .portfolio-info h3 { font-size: 1.15rem; line-height: 1.4; overflow-wrap: anywhere; }
+        .document-card .portfolio-info p { margin-top: 0.5rem; }
 
         .portfolio-toggle {
             text-align: center;
@@ -2134,13 +2159,20 @@
             .nav { padding: 1.5rem; }
             .nav-links { display: none; }
             .section { padding: 5rem 1.5rem; }
-            .hero-name { font-size: 3rem; letter-spacing: 5px; }
+            .hero { max-width: 100%; min-width: 0; }
+            .hero-name { font-size: 3rem; letter-spacing: 0; }
+            .hero-actions { flex-wrap: wrap; }
+            .about > * { min-width: 0; }
+            .about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
             .featured-grid { grid-template-columns: 1fr; }
             .portfolio-grid { grid-template-columns: 1fr; }
             .gaming-main-tabs { grid-template-columns: 1fr; }
             .gaming-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
             .contact-links { grid-template-columns: repeat(2, 1fr); }
-            .modal-body { grid-template-columns: 1fr; }
+            .modal-overlay { padding: 1rem; }
+            .modal-body { grid-template-columns: minmax(0, 1fr); padding: 1.25rem; }
+            .modal-title { font-size: 1.5rem; line-height: 1.4; overflow-wrap: anywhere; }
+            .modal-close-btn { top: 1rem; right: 1rem; width: 44px; height: 44px; }
             .modal-sidebar { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1.5rem; }
             .form-row { grid-template-columns: 1fr; }
             .footer { padding: 2rem 1.5rem; }
@@ -2246,7 +2278,7 @@
                         </div>
                         <div class="about-stats">
                             <div class="stat-item">
-                                <h3>8</h3>
+                                <h3 id="documentCount">12</h3>
                                 <p data-zh="文案文档" data-en="Documents">文案文档</p>
                             </div>
                             <div class="stat-item">
@@ -2362,6 +2394,38 @@
                                 <p data-zh="队长 · 游戏策划" data-en="Leader · Game Designer">队长 · 游戏策划</p>
                             </div>
                         </div>
+                        <div class="portfolio-item document-card" data-category="design" data-project="shop-system-design" role="button" tabindex="0">
+                            <i class="ph ph-storefront document-card-icon" aria-hidden="true"></i>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="系统设计练习" data-en="System Design Exercise">系统设计练习</div>
+                                <h3 data-zh="商城系统设计练习" data-en="Shop System Design Exercise">商城系统设计练习</h3>
+                                <p data-zh="商城系统 · 策划文档" data-en="Shop System · Design Doc">商城系统 · 策划文档</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item document-card" data-category="design" data-project="equipment-system-design" role="button" tabindex="0">
+                            <i class="ph ph-sword document-card-icon" aria-hidden="true"></i>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="系统设计练习" data-en="System Design Exercise">系统设计练习</div>
+                                <h3 data-zh="装备系统设计练习" data-en="Equipment System Design Exercise">装备系统设计练习</h3>
+                                <p data-zh="装备系统 · 策划文档" data-en="Equipment System · Design Doc">装备系统 · 策划文档</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item document-card" data-category="design" data-project="crayon-design-doc" role="button" tabindex="0">
+                            <i class="ph ph-pencil-line document-card-icon" aria-hidden="true"></i>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="TapTap聚光灯GameJam" data-en="TapTap Spotlight GameJam">TapTap聚光灯GameJam</div>
+                                <h3 data-zh="《What the Crayon Remember》策划案" data-en="What the Crayon Remember Design Doc">《What the Crayon Remember》策划案</h3>
+                                <p data-zh="主策划 · 游戏策划案" data-en="Lead Designer · Game Design Doc">主策划 · 游戏策划案</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item document-card" data-category="analysis" data-project="equipment-analysis" role="button" tabindex="0">
+                            <i class="ph ph-stack document-card-icon" aria-hidden="true"></i>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="系统拆解" data-en="System Analysis">系统拆解</div>
+                                <h3 data-zh="装备系统拆解" data-en="Equipment System Analysis">装备系统拆解</h3>
+                                <p data-zh="装备系统 · 拆解分析" data-en="Equipment System · Analysis">装备系统 · 拆解分析</p>
+                            </div>
+                        </div>
                         <div class="portfolio-item" data-category="design" data-project="embers-system-doc" style="cursor: pointer;">
                             <div class="portfolio-item-bg" style="background-image: url('images/文案文档图标/《余烬》系统策划案.png'); background-size: cover; background-position: center;"></div>
                             <div class="portfolio-info">
@@ -2444,6 +2508,14 @@
                     <p data-zh="不断探索游戏设计的边界" data-en="Continuously exploring the boundaries of game design">不断探索游戏设计的边界</p>
                 </div>
                 <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2026.10.01 - 2026.10.21</div>
+                        <div class="timeline-content">
+                            <h3 data-zh="TapTap聚光灯GameJam" data-en="TapTap Spotlight GameJam">TapTap聚光灯GameJam</h3>
+                            <h4 data-zh="What the Crayon Remember · 主策划" data-en="What the Crayon Remember · Lead Game Designer">What the Crayon Remember · 主策划</h4>
+                            <p data-zh="参与TapTap聚光灯GameJam，担任作品《What the Crayon Remember》的主策划，负责游戏策划工作。" data-en="Participating in TapTap Spotlight GameJam as the lead game designer for What the Crayon Remember, responsible for game design.">参与TapTap聚光灯GameJam，担任作品《What the Crayon Remember》的主策划，负责游戏策划工作。</p>
+                        </div>
+                    </div>
                     <div class="timeline-item">
                         <div class="timeline-date">2026.09.11 - 2026.10.11</div>
                         <div class="timeline-content">
@@ -2642,6 +2714,8 @@
 
                     <div class="gaming-section active" id="tab-mmo">
                         <div class="gaming-cards">
+                            <div class="gaming-card"><div class="gaming-card-image" role="img" aria-label="诡秘之主" style="background-image: url('images/游戏积累/诡秘之主.jpg'); background-size: contain; background-repeat: no-repeat;"></div><div class="gaming-card-info"><h4 data-zh="诡秘之主" data-en="Lord of Mysteries">诡秘之主</h4></div></div>
+                            <div class="gaming-card"><div class="gaming-card-image" role="img" aria-label="命运方舟" style="background-image: url('images/游戏积累/命运方舟.jpg')"></div><div class="gaming-card-info"><h4 data-zh="命运方舟" data-en="Lost Ark">命运方舟</h4></div></div>
                             <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/英雄联盟.png')"></div><div class="gaming-card-info"><h4 data-zh="英雄联盟" data-en="League of Legends">英雄联盟</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
                             <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/永劫.jpg')"></div><div class="gaming-card-info"><h4 data-zh="永劫无间" data-en="Naraka: Bladepoint">永劫无间</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
                             <div class="gaming-card"><div class="gaming-card-image" style="background-image: url('images/游戏积累/三角洲.jpg')"></div><div class="gaming-card-info"><h4 data-zh="三角洲行动" data-en="Delta Force">三角洲行动</h4><span class="gaming-badge" data-zh="精通" data-en="Expert">精通</span></div></div>
@@ -2788,6 +2862,30 @@
     <script>
         // 作品数据
         const projectsData = {
+            'shop-system-design': {
+                type: 'design', category: '系统设计练习', title: '商城系统设计练习', subtitle: '商城系统 · 策划文档',
+                role: '策划', description: '围绕游戏商城系统开展的设计练习。',
+                tools: ['-'], duration: '-', teamSize: '-',
+                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+            },
+            'equipment-system-design': {
+                type: 'design', category: '系统设计练习', title: '装备系统设计练习', subtitle: '装备系统 · 策划文档',
+                role: '策划', description: '围绕游戏装备系统开展的设计练习。',
+                tools: ['-'], duration: '-', teamSize: '-',
+                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+            },
+            'crayon-design-doc': {
+                type: 'design', category: 'TapTap聚光灯GameJam', title: '《What the Crayon Remember》策划案', subtitle: '主策划 · 游戏策划案',
+                role: '主策划', description: 'TapTap聚光灯GameJam作品《What the Crayon Remember》的游戏策划案，在项目中担任主策划。',
+                tools: ['-'], duration: '2026.10.01 - 2026.10.21', teamSize: '-',
+                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+            },
+            'equipment-analysis': {
+                type: 'analysis', category: '系统拆解', title: '装备系统拆解', subtitle: '装备系统 · 拆解分析',
+                role: '分析者', description: '围绕游戏装备系统开展的拆解分析。',
+                tools: ['-'], duration: '-', teamSize: '-',
+                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+            },
             'embers': {
                 type: 'demo', category: '原创独立游戏', title: '余烬', subtitle: '2D横版动作游戏',
                 role: '独立开发者', description: '独立进行暗黑幻想题材2D横版动作游戏开发，围绕"余火"世界观设计角色、场景与基础战斗循环。使用Unity完成角色控制、状态机、基础UI与关卡搭建，实现核心玩法。',
@@ -3194,6 +3292,14 @@
                 this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.close(); });
                 document.querySelectorAll('.portfolio-item').forEach(item => {
+                    if (item.getAttribute('role') === 'button') {
+                        item.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                item.click();
+                            }
+                        });
+                    }
                     item.addEventListener('click', () => {
                         const projectId = item.dataset.project;
                         if (projectId && projectsData[projectId]) this.open(projectsData[projectId]);
@@ -3497,6 +3603,7 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('documentCount').textContent = document.querySelectorAll('.portfolio-item:not([data-category="demo"])').length;
             new ParticleBackground();
             new BackgroundStars();
             new BackgroundOrbs();
