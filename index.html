@@ -571,6 +571,8 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(100, 100, 150, 0.1);
         }
 
+        .featured-item[data-project] { cursor: pointer; }
+
         .featured-image {
             width: 100%;
             height: 250px;
@@ -2019,6 +2021,9 @@
         .modal-main-media img, .modal-main-media video { width: 100%; height: 100%; object-fit: cover; }
         .modal-main-media iframe { width: 100%; height: 100%; }
 
+        .modal-media-section--uncropped .modal-main-media { aspect-ratio: var(--media-aspect); }
+        .modal-media-section--uncropped .modal-main-media img { object-fit: contain; }
+
         .modal-media-placeholder { color: var(--text-muted); font-size: 1.2rem; }
 
         .modal-thumbnails {
@@ -2038,6 +2043,8 @@
             height: 68px;
             flex-shrink: 0;
             border: 2px solid transparent;
+            padding: 0;
+            background: transparent;
             cursor: pointer;
             transition: all 0.2s ease;
             overflow: hidden;
@@ -2080,6 +2087,8 @@
             padding-bottom: 2rem;
             border-bottom: 1px solid var(--border);
         }
+
+        .modal-actions:empty { display: none; }
 
         .modal-btn {
             padding: 0.7rem 1.5rem;
@@ -2340,13 +2349,13 @@
                             <div class="featured-role" data-zh="主策划" data-en="Lead Designer">主策划</div>
                         </div>
                     </div>
-                    <div class="featured-item">
-                        <div class="featured-image" style="background-image: url('images/游戏图标/时空筑桥录.png');"></div>
+                    <div class="featured-item" data-project="crayon" role="button" tabindex="0">
+                        <div class="featured-image" style="background-image: url('images/蜡忆余彩/web/cover.webp');"></div>
                         <div class="featured-content">
-                            <div class="featured-tag" data-zh="全国大学生计算机设计大赛" data-en="National College Computer Design">全国大学生计算机设计大赛</div>
-                            <h3 data-zh="时空筑桥录" data-en="Space-Time Bridge Builder">时空筑桥录</h3>
-                            <p data-zh="担任队长主导核心玩法设计，完成兼具传统文化表达与解谜体验的可玩Demo。" data-en="Led team to design core gameplay, completed a playable demo combining traditional culture with puzzle experience.">担任队长主导核心玩法设计，完成兼具传统文化表达与解谜体验的可玩Demo。</p>
-                            <div class="featured-role" data-zh="队长/主策划" data-en="Leader/Lead Designer">队长/主策划</div>
+                            <div class="featured-tag" data-zh="TapTap 聚光灯 GameJam" data-en="TapTap Spotlight GameJam">TapTap 聚光灯 GameJam</div>
+                            <h3 data-zh="蜡忆余彩" data-en="What the Crayon Remembers">蜡忆余彩</h3>
+                            <p data-zh="以童年涂鸦为线索，在灰白的世界里解谜，找回蓝、绿、红三种颜色。" data-en="Follow childhood doodles and solve puzzles to bring blue, green, and red back to a world drained of color.">以童年涂鸦为线索，在灰白的世界里解谜，找回蓝、绿、红三种颜色。</p>
+                            <div class="featured-role" data-zh="主策划" data-en="Lead Designer">主策划</div>
                         </div>
                     </div>
                 </div>
@@ -2370,6 +2379,22 @@
                 </div>
                 <div class="portfolio-wrapper" id="portfolioWrapper">
                     <div class="portfolio-grid" id="portfolioGrid">
+                        <div class="portfolio-item" data-category="demo" data-project="crayon" role="button" tabindex="0" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/蜡忆余彩/web/cover.webp'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="TapTap 聚光灯 GameJam" data-en="TapTap Spotlight GameJam">TapTap 聚光灯 GameJam</div>
+                                <h3 data-zh="蜡忆余彩" data-en="What the Crayon Remembers">蜡忆余彩</h3>
+                                <p data-zh="主策划 · 叙事解谜" data-en="Lead Designer · Narrative Puzzle Game">主策划 · 叙事解谜</p>
+                            </div>
+                        </div>
+                        <div class="portfolio-item" data-category="demo" data-project="baigui" role="button" tabindex="0" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/百诡夜行/web/cover.webp'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="企业合作项目" data-en="Industry Collaboration">企业合作项目</div>
+                                <h3 data-zh="百诡夜行" data-en="Bai Gui Ye Xing">百诡夜行</h3>
+                                <p data-zh="关卡策划总负责人 · 横版跑酷" data-en="Lead Level Designer · Side-scrolling Runner">关卡策划总负责人 · 横版跑酷</p>
+                            </div>
+                        </div>
                         <div class="portfolio-item" data-category="demo" data-project="embers" style="cursor: pointer;">
                             <div class="portfolio-item-bg" style="background-image: url('images/游戏图标/余烬.png'); background-size: cover; background-position: center;"></div>
                             <div class="portfolio-info">
@@ -2414,7 +2439,7 @@
                             <i class="ph ph-pencil-line document-card-icon" aria-hidden="true"></i>
                             <div class="portfolio-info">
                                 <div class="portfolio-category" data-zh="TapTap聚光灯GameJam" data-en="TapTap Spotlight GameJam">TapTap聚光灯GameJam</div>
-                                <h3 data-zh="《What the Crayon Remember》策划案" data-en="What the Crayon Remember Design Doc">《What the Crayon Remember》策划案</h3>
+                                <h3 data-zh="《蜡忆余彩》策划案" data-en="What the Crayon Remembers Design Doc">《蜡忆余彩》策划案</h3>
                                 <p data-zh="主策划 · 游戏策划案" data-en="Lead Designer · Game Design Doc">主策划 · 游戏策划案</p>
                             </div>
                         </div>
@@ -2509,11 +2534,18 @@
                 </div>
                 <div class="timeline">
                     <div class="timeline-item">
+                        <div class="timeline-date" data-zh="线下实习" data-en="On-site Internship">线下实习</div>
+                        <div class="timeline-content">
+                            <h3 data-zh="星合互娱 · 星芽计划" data-en="Xinghe Interactive · Xingya Program">星合互娱 · 星芽计划</h3>
+                            <p data-zh="在星合互娱参加「星芽计划」线下实习，结合此前的游戏策划实践，进一步了解游戏研发流程与团队协作方式。" data-en="Took part in Xinghe Interactive’s on-site Xingya internship program, building on my game design experience to learn more about development workflows and team collaboration.">在星合互娱参加「星芽计划」线下实习，结合此前的游戏策划实践，进一步了解游戏研发流程与团队协作方式。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
                         <div class="timeline-date">2026.10.01 - 2026.10.21</div>
                         <div class="timeline-content">
                             <h3 data-zh="TapTap聚光灯GameJam" data-en="TapTap Spotlight GameJam">TapTap聚光灯GameJam</h3>
-                            <h4 data-zh="What the Crayon Remember · 主策划" data-en="What the Crayon Remember · Lead Game Designer">What the Crayon Remember · 主策划</h4>
-                            <p data-zh="参与TapTap聚光灯GameJam，担任作品《What the Crayon Remember》的主策划，负责游戏策划工作。" data-en="Participating in TapTap Spotlight GameJam as the lead game designer for What the Crayon Remember, responsible for game design.">参与TapTap聚光灯GameJam，担任作品《What the Crayon Remember》的主策划，负责游戏策划工作。</p>
+                            <h4 data-zh="蜡忆余彩 · 主策划" data-en="What the Crayon Remembers · Lead Game Designer">蜡忆余彩 · 主策划</h4>
+                            <p data-zh="参与 TapTap 聚光灯 GameJam，担任《蜡忆余彩》的主策划，负责游戏策划工作。" data-en="Served as lead game designer for What the Crayon Remembers at TapTap Spotlight GameJam.">参与 TapTap 聚光灯 GameJam，担任《蜡忆余彩》的主策划，负责游戏策划工作。</p>
                         </div>
                     </div>
                     <div class="timeline-item">
@@ -2789,7 +2821,7 @@
     </main>
 
     <div class="back-to-top" id="backToTop">↑</div>
-    <button class="modal-close-btn" id="modalClose">✕</button>
+    <button class="modal-close-btn" id="modalClose" aria-label="关闭项目详情">✕</button>
 
     <div class="modal-overlay" id="projectModal">
         <div class="modal-container">
@@ -2862,11 +2894,32 @@
     <script>
         // 作品数据
         const projectsData = {
+            'crayon': {
+                type: 'demo', category: 'TapTap 聚光灯 GameJam', title: '蜡忆余彩', subtitle: 'What the Crayon Remembers · 叙事解谜',
+                role: '主策划', description: '玩家扮演一个封闭内心的孩子，跟随童年涂鸦探索灰白的房间，通过还原记忆与轻解谜，让蓝色的天空、绿色的植物和红色的家庭记忆重新进入他的世界。项目以三种颜色串联关卡，让场景变化呼应主角的情绪变化。',
+                tools: ['Unreal Engine'], duration: '2026.10.01 - 2026.10.21', teamSize: '团队',
+                mediaAspect: '8 / 5',
+                screenshots: ['images/蜡忆余彩/web/gameplay.webp', ...Array.from({ length: 9 }, (_, i) => `images/蜡忆余彩/web/screen-${i + 1}.webp`)],
+                playUrl: 'https://www.taptap.cn/app/985331?os=pc', playLabel: '前往 TapTap',
+                localGameUrl: 'game/蜡忆余彩.zip', relatedDoc: 'crayon-design-doc'
+            },
+            'baigui': {
+                type: 'demo', category: '企业合作项目', title: '百诡夜行', subtitle: '横版跑酷小游戏',
+                role: '学生助理 · 关卡策划总负责人',
+                description: '学校工作室承接的首个企业合作项目。玩家穿行于灯火点缀的夜色街巷，躲避障碍、收集道具。项目中负责统筹关卡策划，并以学生助理身份协助团队沟通与项目推进。',
+                tools: ['-'], duration: '2026.09.11 - 2026.10.11', teamSize: '团队',
+                mediaAspect: '1600 / 727',
+                screenshots: [
+                    ['gameplay-1', '跑酷实机 1'], ['gameplay-2', '跑酷实机 2'], ['gameplay-3', '跑酷实机 3'],
+                    ['start', '开始界面'], ['home', '主界面'], ['levels', '选关界面'], ['levels-2', '选关界面 2'],
+                    ['endless', '无尽模式'], ['retry', '失败弹窗'], ['shop', '商城界面'], ['check-in', '签到界面']
+                ].map(([name, label]) => ({ src: `images/百诡夜行/web/${name}.webp`, label }))
+            },
             'shop-system-design': {
                 type: 'design', category: '系统设计练习', title: '商城系统设计练习', subtitle: '商城系统 · 策划文档',
-                role: '策划', description: '围绕游戏商城系统开展的设计练习。',
+                role: '策划', description: '涵盖商城界面原型、商品信息与限购规则、开服限时商城、商品和商城配置表，以及购买流程与异常处理。',
                 tools: ['-'], duration: '-', teamSize: '-',
-                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+                screenshots: [], downloadUrl: 'DOCX/商城系统设计.xlsx', documents: []
             },
             'equipment-system-design': {
                 type: 'design', category: '系统设计练习', title: '装备系统设计练习', subtitle: '装备系统 · 策划文档',
@@ -2875,10 +2928,10 @@
                 screenshots: [], pdfUrl: '', docxUrl: '', documents: []
             },
             'crayon-design-doc': {
-                type: 'design', category: 'TapTap聚光灯GameJam', title: '《What the Crayon Remember》策划案', subtitle: '主策划 · 游戏策划案',
-                role: '主策划', description: 'TapTap聚光灯GameJam作品《What the Crayon Remember》的游戏策划案，在项目中担任主策划。',
-                tools: ['-'], duration: '2026.10.01 - 2026.10.21', teamSize: '-',
-                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
+                type: 'design', category: 'TapTap 聚光灯 GameJam', title: '《蜡忆余彩》策划案', subtitle: '主策划 · 游戏策划案',
+                role: '主策划', description: '收录剧情初稿、三原色关卡结构、涂鸦与道具交互设计、物品剧情内容表、开发工单及版本记录。',
+                tools: ['Excel'], duration: '2026.10.01 - 2026.10.21', teamSize: '团队',
+                screenshots: [], downloadUrl: 'DOCX/《蜡忆余彩》策划案.xlsx', documents: []
             },
             'equipment-analysis': {
                 type: 'analysis', category: '系统拆解', title: '装备系统拆解', subtitle: '装备系统 · 拆解分析',
@@ -3291,7 +3344,7 @@
                 this.closeBtn.addEventListener('click', () => this.close());
                 this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.close(); });
-                document.querySelectorAll('.portfolio-item').forEach(item => {
+                document.querySelectorAll('.portfolio-item[data-project], .featured-item[data-project]').forEach(item => {
                     if (item.getAttribute('role') === 'button') {
                         item.addEventListener('keydown', (e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -3302,21 +3355,27 @@
                     }
                     item.addEventListener('click', () => {
                         const projectId = item.dataset.project;
-                        if (projectId && projectsData[projectId]) this.open(projectsData[projectId]);
+                        if (projectsData[projectId]) this.open(projectsData[projectId], item);
                     });
                 });
             }
-            open(project) {
+            open(project, trigger) {
+                if (trigger) this.trigger = trigger;
                 this.content.innerHTML = this.generateContent(project);
                 this.modal.classList.add('active');
                 this.closeBtn.classList.add('visible');
+                this.closeBtn.focus({ preventScroll: true });
+                this.modal.scrollTop = 0;
                 document.body.style.overflow = 'hidden';
                 this.initThumbnails();
             }
             close() {
+                if (!this.modal.classList.contains('active')) return;
                 this.modal.classList.remove('active');
                 this.closeBtn.classList.remove('visible');
                 document.body.style.overflow = '';
+                if (this.trigger?.tabIndex >= 0) this.trigger.focus({ preventScroll: true });
+                this.trigger = null;
             }
             initThumbnails() {
                 const thumbnails = document.querySelectorAll('.modal-thumbnail');
@@ -3344,8 +3403,10 @@
                 const mainMedia = document.querySelector('.modal-main-media');
                 const thumbnails = document.querySelectorAll('.modal-thumbnail');
                 if (!mainMedia || !thumbnails[index]) return;
-                thumbnails.forEach(t => t.classList.remove('active'));
-                thumbnails[index].classList.add('active');
+                thumbnails.forEach((thumb, i) => {
+                    thumb.classList.toggle('active', i === index);
+                    thumb.setAttribute('aria-pressed', String(i === index));
+                });
                 const mediaType = thumbnails[index].dataset.type;
                 const mediaSrc = thumbnails[index].dataset.src;
                 if (mediaType === 'video') {
@@ -3355,21 +3416,26 @@
                         mainMedia.innerHTML = `<video src="${mediaSrc}" controls style="width:100%;height:100%;"></video>`;
                     }
                 } else {
-                    mainMedia.innerHTML = `<img src="${mediaSrc}" alt="展示图片">`;
+                    mainMedia.innerHTML = `<img src="${mediaSrc}" alt="${thumbnails[index].getAttribute('aria-label')}">`;
                 }
             }
             generateContent(project) {
                 let html = '';
+                const downloadUrl = project.downloadUrl || project.docxUrl;
                 // 媒体区域 - 只有游戏Demo类型才显示
                 if (project.type === 'demo') {
                     this.mediaList = [];
                     const videoCover = project.videoCover || (project.screenshots && project.screenshots[0]) || '';
                     if (project.videoUrl) this.mediaList.push({ type: 'video', src: project.videoUrl, label: 'PV预览', cover: videoCover });
                     if (project.videoUrl2) this.mediaList.push({ type: 'video', src: project.videoUrl2, label: '演示视频', cover: videoCover });
-                    if (project.screenshots) project.screenshots.forEach(s => this.mediaList.push({ type: 'image', src: s, label: '截图' }));
+                    project.screenshots?.forEach((image, i) => this.mediaList.push(typeof image === 'string'
+                        ? { type: 'image', src: image, label: `截图 ${i + 1}` }
+                        : { type: 'image', ...image }));
                     const firstVideo = this.mediaList.find(m => m.type === 'video');
                     const hasMedia = this.mediaList.length > 0;
-                    html += `<div class="modal-media-section"><div class="modal-main-media">`;
+                    const mediaClass = project.mediaAspect ? ' modal-media-section--uncropped' : '';
+                    const mediaStyle = project.mediaAspect ? ` style="--media-aspect: ${project.mediaAspect}"` : '';
+                    html += `<div class="modal-media-section${mediaClass}"${mediaStyle}><div class="modal-main-media">`;
                     if (hasMedia) {
                         if (firstVideo) {
                             const isBilibili = firstVideo.src.includes('bilibili');
@@ -3382,7 +3448,7 @@
                     }
                     html += `</div>`;
                     if (hasMedia) {
-                        html += `<div class="modal-thumbnails">${this.mediaList.map((m, i) => `<div class="modal-thumbnail ${i === 0 ? 'active' : ''}" data-type="${m.type}" data-src="${m.src}"><img src="${m.type === 'video' ? m.cover : m.src}" alt="${m.label}"></div>`).join('')}</div>`;
+                        html += `<div class="modal-thumbnails">${this.mediaList.map((m, i) => `<button type="button" class="modal-thumbnail ${i === 0 ? 'active' : ''}" aria-label="${m.label}" aria-pressed="${i === 0}" data-type="${m.type}" data-src="${m.src}"><img src="${m.type === 'video' ? m.cover : m.src}" alt="" loading="lazy"></button>`).join('')}</div>`;
                     }
                     html += `</div>`;
                 }
@@ -3392,17 +3458,19 @@
                 // 按钮
                 html += '<div class="modal-actions">';
                 if (project.type === 'demo') {
-                    if (project.playUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.playUrl}')">试玩链接</button>`;
-                    if (project.gameUrl) html += `<a href="${project.gameUrl}" download class="modal-btn modal-btn-primary">下载游戏</a>`;
-                    if (project.gameUrl) html += '<div class="modal-download-note">游戏包体较大，请使用电脑下载并解压运行。手机端建议先收藏页面。</div>';
-                    if (project.relatedDoc) html += `<button class="modal-btn modal-btn-outline" onclick="projectModal.open(projectsData['${project.relatedDoc}'])">查看策划案</button>`;
-                    if (project.relatedDoc) html += `<a href="${projectsData[project.relatedDoc]?.docxUrl || '#'}" download class="modal-btn modal-btn-outline">下载策划案</a>`;
-                } else if (project.type === 'design') {
-                    if (project.pdfUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.pdfUrl}')">在线预览</button>`;
-                    if (project.docxUrl) html += `<a href="${project.docxUrl}" download class="modal-btn modal-btn-primary">下载文档</a>`;
+                    const gameUrl = project.gameUrl || (location.protocol === 'file:' ? project.localGameUrl : '');
+                    if (project.playUrl) html += `<a href="${project.playUrl}" target="_blank" rel="noopener" class="modal-btn modal-btn-primary">${project.playLabel || '试玩链接'}</a>`;
+                    if (gameUrl) html += `<a href="${gameUrl}" download class="modal-btn ${project.playUrl ? 'modal-btn-outline' : 'modal-btn-primary'}">${project.localGameUrl ? '下载本地 Windows 版' : '下载游戏'}</a>`;
+                    const relatedDoc = projectsData[project.relatedDoc];
+                    if (relatedDoc) {
+                        html += `<button class="modal-btn modal-btn-outline" onclick="projectModal.open(projectsData['${project.relatedDoc}'])">查看策划案</button>`;
+                        const docUrl = relatedDoc.downloadUrl || relatedDoc.docxUrl;
+                        if (docUrl) html += `<a href="${docUrl}" download class="modal-btn modal-btn-outline">下载策划案</a>`;
+                    }
+                    if (gameUrl) html += '<div class="modal-download-note">游戏包体较大，请使用电脑下载并解压运行。</div>';
                 } else {
                     if (project.pdfUrl) html += `<button class="modal-btn modal-btn-primary" onclick="window.open('${project.pdfUrl}')">在线预览</button>`;
-                    if (project.docxUrl) html += `<a href="${project.docxUrl}" download class="modal-btn modal-btn-primary">下载文档</a>`;
+                    if (downloadUrl) html += `<a href="${downloadUrl}" download class="modal-btn modal-btn-primary">下载${project.downloadUrl ? ' Excel 文档' : '文档'}</a>`;
                 }
                 html += '</div>';
                 html += `<div class="modal-section"><h3 class="modal-section-title">项目介绍</h3><p>${project.description}</p></div>`;
