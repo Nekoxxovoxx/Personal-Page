@@ -571,8 +571,6 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(100, 100, 150, 0.1);
         }
 
-        .featured-item[data-project] { cursor: pointer; }
-
         .featured-image {
             width: 100%;
             height: 250px;
@@ -2024,8 +2022,6 @@
         .modal-media-section--uncropped .modal-main-media { aspect-ratio: var(--media-aspect); }
         .modal-media-section--uncropped .modal-main-media img { object-fit: contain; }
 
-        .modal-media-placeholder { color: var(--text-muted); font-size: 1.2rem; }
-
         .modal-thumbnails {
             display: flex;
             gap: 0.5rem;
@@ -2349,7 +2345,7 @@
                             <div class="featured-role" data-zh="主策划" data-en="Lead Designer">主策划</div>
                         </div>
                     </div>
-                    <div class="featured-item" data-project="crayon" role="button" tabindex="0">
+                    <div class="featured-item">
                         <div class="featured-image" style="background-image: url('images/蜡忆余彩/web/cover.webp');"></div>
                         <div class="featured-content">
                             <div class="featured-tag" data-zh="TapTap 聚光灯 GameJam" data-en="TapTap Spotlight GameJam">TapTap 聚光灯 GameJam</div>
@@ -2379,6 +2375,14 @@
                 </div>
                 <div class="portfolio-wrapper" id="portfolioWrapper">
                     <div class="portfolio-grid" id="portfolioGrid">
+                        <div class="portfolio-item" data-category="demo" data-project="po-zhen-san-guo" role="button" tabindex="0" style="cursor: pointer;">
+                            <div class="portfolio-item-bg" style="background-image: url('images/游戏图标/po-zhen-san-guo.webp'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-info">
+                                <div class="portfolio-category" data-zh="网页游戏" data-en="Browser Game">网页游戏</div>
+                                <h3 data-zh="破阵三国传" data-en="Po Zhen San Guo Zhuan">破阵三国传</h3>
+                                <p data-zh="Web 端 · 游戏项目" data-en="Web Game Project">Web 端 · 游戏项目</p>
+                            </div>
+                        </div>
                         <div class="portfolio-item" data-category="demo" data-project="crayon" role="button" tabindex="0" style="cursor: pointer;">
                             <div class="portfolio-item-bg" style="background-image: url('images/蜡忆余彩/web/cover.webp'); background-size: cover; background-position: center;"></div>
                             <div class="portfolio-info">
@@ -2388,7 +2392,7 @@
                             </div>
                         </div>
                         <div class="portfolio-item" data-category="demo" data-project="baigui" role="button" tabindex="0" style="cursor: pointer;">
-                            <div class="portfolio-item-bg" style="background-image: url('images/百诡夜行/web/cover.webp'); background-size: cover; background-position: center;"></div>
+                            <div class="portfolio-item-bg" style="background-image: url('images/百诡夜行/web/cover.webp'); background-color: #111923; background-size: cover; background-position: center;"></div>
                             <div class="portfolio-info">
                                 <div class="portfolio-category" data-zh="企业合作项目" data-en="Industry Collaboration">企业合作项目</div>
                                 <h3 data-zh="百诡夜行" data-en="Bai Gui Ye Xing">百诡夜行</h3>
@@ -2534,10 +2538,11 @@
                 </div>
                 <div class="timeline">
                     <div class="timeline-item">
-                        <div class="timeline-date" data-zh="线下实习" data-en="On-site Internship">线下实习</div>
+                        <div class="timeline-date">2026.11.09 - 2026.12.18</div>
                         <div class="timeline-content">
                             <h3 data-zh="星合互娱 · 星芽计划" data-en="Xinghe Interactive · Xingya Program">星合互娱 · 星芽计划</h3>
-                            <p data-zh="在星合互娱参加「星芽计划」线下实习，结合此前的游戏策划实践，进一步了解游戏研发流程与团队协作方式。" data-en="Took part in Xinghe Interactive’s on-site Xingya internship program, building on my game design experience to learn more about development workflows and team collaboration.">在星合互娱参加「星芽计划」线下实习，结合此前的游戏策划实践，进一步了解游戏研发流程与团队协作方式。</p>
+                            <h4 data-zh="线下实习 · 队长、主策划" data-en="On-site Internship · Team Lead &amp; Lead Game Designer">线下实习 · 队长、主策划</h4>
+                            <p data-zh="参加星合互娱「星芽计划」线下实习，担任队长和主策划，负责团队协作与游戏策划工作。" data-en="Joined Xinghe Interactive’s on-site Xingya internship as team lead and lead game designer, coordinating the team and overseeing game design.">参加星合互娱「星芽计划」线下实习，担任队长和主策划，负责团队协作与游戏策划工作。</p>
                         </div>
                     </div>
                     <div class="timeline-item">
@@ -2894,6 +2899,10 @@
     <script>
         // 作品数据
         const projectsData = {
+            'po-zhen-san-guo': {
+                type: 'demo', category: '网页游戏', title: '破阵三国传', subtitle: 'Web 端游戏',
+                description: '网页试玩、实机截图与演示视频待补充。'
+            },
             'crayon': {
                 type: 'demo', category: 'TapTap 聚光灯 GameJam', title: '蜡忆余彩', subtitle: 'What the Crayon Remembers · 叙事解谜',
                 role: '主策划', description: '玩家扮演一个封闭内心的孩子，跟随童年涂鸦探索灰白的房间，通过还原记忆与轻解谜，让蓝色的天空、绿色的植物和红色的家庭记忆重新进入他的世界。项目以三种颜色串联关卡，让场景变化呼应主角的情绪变化。',
@@ -3344,7 +3353,7 @@
                 this.closeBtn.addEventListener('click', () => this.close());
                 this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.close(); });
-                document.querySelectorAll('.portfolio-item[data-project], .featured-item[data-project]').forEach(item => {
+                document.querySelectorAll('#portfolioGrid .portfolio-item[data-project]').forEach(item => {
                     if (item.getAttribute('role') === 'button') {
                         item.addEventListener('keydown', (e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -3423,33 +3432,27 @@
                 let html = '';
                 const downloadUrl = project.downloadUrl || project.docxUrl;
                 // 媒体区域 - 只有游戏Demo类型才显示
-                if (project.type === 'demo') {
-                    this.mediaList = [];
-                    const videoCover = project.videoCover || (project.screenshots && project.screenshots[0]) || '';
-                    if (project.videoUrl) this.mediaList.push({ type: 'video', src: project.videoUrl, label: 'PV预览', cover: videoCover });
-                    if (project.videoUrl2) this.mediaList.push({ type: 'video', src: project.videoUrl2, label: '演示视频', cover: videoCover });
-                    project.screenshots?.forEach((image, i) => this.mediaList.push(typeof image === 'string'
+                if (project.type === 'demo' && (project.videoUrl || project.videoUrl2 || project.screenshots?.length)) {
+                    const media = [];
+                    const firstScreenshot = project.screenshots?.[0];
+                    const videoCover = project.videoCover || firstScreenshot?.src || firstScreenshot || '';
+                    if (project.videoUrl) media.push({ type: 'video', src: project.videoUrl, label: 'PV预览', cover: videoCover });
+                    if (project.videoUrl2) media.push({ type: 'video', src: project.videoUrl2, label: '演示视频', cover: videoCover });
+                    project.screenshots?.forEach((image, i) => media.push(typeof image === 'string'
                         ? { type: 'image', src: image, label: `截图 ${i + 1}` }
                         : { type: 'image', ...image }));
-                    const firstVideo = this.mediaList.find(m => m.type === 'video');
-                    const hasMedia = this.mediaList.length > 0;
+                    const first = media[0];
                     const mediaClass = project.mediaAspect ? ' modal-media-section--uncropped' : '';
                     const mediaStyle = project.mediaAspect ? ` style="--media-aspect: ${project.mediaAspect}"` : '';
                     html += `<div class="modal-media-section${mediaClass}"${mediaStyle}><div class="modal-main-media">`;
-                    if (hasMedia) {
-                        if (firstVideo) {
-                            const isBilibili = firstVideo.src.includes('bilibili');
-                            html += isBilibili ? `<iframe src="${firstVideo.src}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>` : `<video src="${firstVideo.src}" controls style="width:100%;height:100%;"></video>`;
-                        } else {
-                            html += `<img src="${this.mediaList[0].src}" alt="${project.title}">`;
-                        }
+                    if (first.type === 'video') {
+                        const isBilibili = first.src.includes('bilibili');
+                        html += isBilibili ? `<iframe src="${first.src}" scrolling="no" frameborder="0" allowfullscreen="true" style="width:100%;height:100%;"></iframe>` : `<video src="${first.src}" controls style="width:100%;height:100%;"></video>`;
                     } else {
-                        html += '<div class="modal-media-placeholder">敬请期待</div>';
+                        html += `<img src="${first.src}" alt="${project.title}">`;
                     }
                     html += `</div>`;
-                    if (hasMedia) {
-                        html += `<div class="modal-thumbnails">${this.mediaList.map((m, i) => `<button type="button" class="modal-thumbnail ${i === 0 ? 'active' : ''}" aria-label="${m.label}" aria-pressed="${i === 0}" data-type="${m.type}" data-src="${m.src}"><img src="${m.type === 'video' ? m.cover : m.src}" alt="" loading="lazy"></button>`).join('')}</div>`;
-                    }
+                    html += `<div class="modal-thumbnails">${media.map((m, i) => `<button type="button" class="modal-thumbnail ${i === 0 ? 'active' : ''}" aria-label="${m.label}" aria-pressed="${i === 0}" data-type="${m.type}" data-src="${m.src}"><img src="${m.type === 'video' ? m.cover : m.src}" alt="" loading="lazy"></button>`).join('')}</div>`;
                     html += `</div>`;
                 }
                 // 内容区域
@@ -3476,13 +3479,14 @@
                 html += `<div class="modal-section"><h3 class="modal-section-title">项目介绍</h3><p>${project.description}</p></div>`;
                 html += '</div>';
                 // 侧边栏
-                html += `<div class="modal-sidebar">
-                    <div class="modal-info-block"><div class="modal-info-label">个人角色</div><div class="modal-info-value">${project.role}</div></div>
-                    <div class="modal-info-block"><div class="modal-info-label">开发周期</div><div class="modal-info-value">${project.duration}</div></div>
-                    <div class="modal-info-block"><div class="modal-info-label">团队规模</div><div class="modal-info-value">${project.teamSize}</div></div>
-                    <div class="modal-info-block"><div class="modal-info-label">使用工具</div><div class="modal-info-value">${project.tools.join('、')}</div></div>
-                    <div class="modal-info-block"><div class="modal-info-label">作品类型</div><div class="modal-info-value">${project.type === 'demo' ? '游戏Demo' : project.type === 'design' ? '策划文档' : '分析文档'}</div></div>
-                </div>`;
+                const details = [
+                    ['个人角色', project.role], ['开发周期', project.duration], ['团队规模', project.teamSize],
+                    ['使用工具', project.tools?.join('、')],
+                    ['作品类型', project.type === 'demo' ? '游戏Demo' : project.type === 'design' ? '策划文档' : '分析文档']
+                ];
+                html += `<div class="modal-sidebar">${details.filter(([, value]) => value).map(([label, value]) =>
+                    `<div class="modal-info-block"><div class="modal-info-label">${label}</div><div class="modal-info-value">${value}</div></div>`
+                ).join('')}</div>`;
                 html += '</div>';
                 return html;
             }
