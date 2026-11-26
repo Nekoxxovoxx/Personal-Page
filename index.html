@@ -1173,26 +1173,10 @@
             color: rgba(255,255,255,0.8);
         }
 
-        .document-card {
-            --document-accent: #85c9b3;
-            border: 1px solid var(--border);
-            border-top: 2px solid var(--document-accent);
-        }
-        .document-card[data-project="equipment-system-design"] { --document-accent: #c4b1e5; }
-        .document-card[data-project="crayon-design-doc"] { --document-accent: #e4b783; }
-        .document-card[data-project="equipment-analysis"] { --document-accent: #8fc3da; }
-        .document-card::after { display: none; }
-        .document-card:focus-visible { outline: 2px solid var(--document-accent); outline-offset: -4px; }
-        .document-card-icon {
-            display: block;
-            padding: 1.5rem;
-            font-size: 2.5rem;
-            color: var(--document-accent);
-        }
-        .document-card .portfolio-info { padding: 1.5rem; opacity: 1; transform: none; }
-        .document-card .portfolio-category { color: var(--document-accent); letter-spacing: 0; }
-        .document-card .portfolio-info h3 { font-size: 1.15rem; line-height: 1.4; overflow-wrap: anywhere; }
-        .document-card .portfolio-info p { margin-top: 0.5rem; }
+        .document-card .portfolio-item-bg { width: 100%; height: 100%; object-fit: contain; }
+        .document-card:focus-visible { outline: 2px solid var(--text-primary); outline-offset: -3px; }
+        .document-card:focus-visible::after { opacity: 1; }
+        .document-card:focus-visible .portfolio-info { opacity: 1; transform: none; }
 
         .portfolio-toggle {
             text-align: center;
@@ -2283,7 +2267,7 @@
                         </div>
                         <div class="about-stats">
                             <div class="stat-item">
-                                <h3 id="documentCount">12</h3>
+                                <h3 id="documentCount">11</h3>
                                 <p data-zh="文案文档" data-en="Documents">文案文档</p>
                             </div>
                             <div class="stat-item">
@@ -2424,7 +2408,7 @@
                             </div>
                         </div>
                         <div class="portfolio-item document-card" data-category="design" data-project="shop-system-design" role="button" tabindex="0">
-                            <i class="ph ph-storefront document-card-icon" aria-hidden="true"></i>
+                            <img class="portfolio-item-bg" src="images/文案文档图标/shop-system-design.webp" alt="" loading="lazy" width="640" height="640">
                             <div class="portfolio-info">
                                 <div class="portfolio-category" data-zh="系统设计练习" data-en="System Design Exercise">系统设计练习</div>
                                 <h3 data-zh="商城系统设计练习" data-en="Shop System Design Exercise">商城系统设计练习</h3>
@@ -2432,7 +2416,7 @@
                             </div>
                         </div>
                         <div class="portfolio-item document-card" data-category="design" data-project="equipment-system-design" role="button" tabindex="0">
-                            <i class="ph ph-sword document-card-icon" aria-hidden="true"></i>
+                            <img class="portfolio-item-bg" src="images/文案文档图标/equipment-system-design.webp" alt="" loading="lazy" width="640" height="640">
                             <div class="portfolio-info">
                                 <div class="portfolio-category" data-zh="系统设计练习" data-en="System Design Exercise">系统设计练习</div>
                                 <h3 data-zh="装备系统设计练习" data-en="Equipment System Design Exercise">装备系统设计练习</h3>
@@ -2440,19 +2424,11 @@
                             </div>
                         </div>
                         <div class="portfolio-item document-card" data-category="design" data-project="crayon-design-doc" role="button" tabindex="0">
-                            <i class="ph ph-pencil-line document-card-icon" aria-hidden="true"></i>
+                            <img class="portfolio-item-bg" src="images/文案文档图标/crayon-design-doc.webp" alt="" loading="lazy" width="640" height="640">
                             <div class="portfolio-info">
                                 <div class="portfolio-category" data-zh="TapTap聚光灯GameJam" data-en="TapTap Spotlight GameJam">TapTap聚光灯GameJam</div>
                                 <h3 data-zh="《蜡忆余彩》策划案" data-en="What the Crayon Remembers Design Doc">《蜡忆余彩》策划案</h3>
                                 <p data-zh="主策划 · 游戏策划案" data-en="Lead Designer · Game Design Doc">主策划 · 游戏策划案</p>
-                            </div>
-                        </div>
-                        <div class="portfolio-item document-card" data-category="analysis" data-project="equipment-analysis" role="button" tabindex="0">
-                            <i class="ph ph-stack document-card-icon" aria-hidden="true"></i>
-                            <div class="portfolio-info">
-                                <div class="portfolio-category" data-zh="系统拆解" data-en="System Analysis">系统拆解</div>
-                                <h3 data-zh="装备系统拆解" data-en="Equipment System Analysis">装备系统拆解</h3>
-                                <p data-zh="装备系统 · 拆解分析" data-en="Equipment System · Analysis">装备系统 · 拆解分析</p>
                             </div>
                         </div>
                         <div class="portfolio-item" data-category="design" data-project="embers-system-doc" style="cursor: pointer;">
@@ -2941,12 +2917,6 @@
                 role: '主策划', description: '收录剧情初稿、三原色关卡结构、涂鸦与道具交互设计、物品剧情内容表、开发工单及版本记录。',
                 tools: ['Excel'], duration: '2026.10.01 - 2026.10.21', teamSize: '团队',
                 screenshots: [], downloadUrl: 'DOCX/《蜡忆余彩》策划案.xlsx', documents: []
-            },
-            'equipment-analysis': {
-                type: 'analysis', category: '系统拆解', title: '装备系统拆解', subtitle: '装备系统 · 拆解分析',
-                role: '分析者', description: '围绕游戏装备系统开展的拆解分析。',
-                tools: ['-'], duration: '-', teamSize: '-',
-                screenshots: [], pdfUrl: '', docxUrl: '', documents: []
             },
             'embers': {
                 type: 'demo', category: '原创独立游戏', title: '余烬', subtitle: '2D横版动作游戏',
